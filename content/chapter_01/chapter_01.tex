@@ -1,6 +1,39 @@
 %!TEX root = ../thesis_main.tex
 
 %%%%%%%%%%
-\chapter{Title}
-\label{sec:Title}
+\chapter{Introduction}
+\label{chap:introduction}
 %%%%%%%%%%
+
+%%%%%%%%%%
+\section{Motivation and Background}
+\label{sec:motivation-brackground}
+%%%%%%%%%%
+
+During the last decade, the use of Unmanned Aerial Vehicles (UAVs) has spread among very different applications. The use of flying robots can be very helpful to improve the way some tasks are already achieved by terrestrial robots. For example, object transportation, environment mapping or surveillance. At the Institute of Automation Engineering\footnote{Technische Universität Dresden. Institut für Automatisierungstechnik. 01062 Dresden, Germany} of the Technical University of Dresden, a drone is being developed in cooperation with the Institute of Solid Mechanics\footnote{Technische Universität Dresden. Institut für Festkörpermechanik. 01062 Dresden, Germany} to investigate the use of flying robots in aerial manipulation.
+
+\nomenclature[ba]{UAV}{Unmanned Aerial Vehicle}
+\nomenclature[ba]{TUD}{Technische Universität Dresden}
+
+When dealing with manipulation of objects, it is desired that the aerial robot adopts a certain pose with respect to the target before the manipulation process really starts. The present work deals with the development of a Visual Servoing (VS) control system that helps a quadrotor robot to acquire the desired pose by means of image data.
+
+\nomenclature[ba]{VS}{Visual Servoing}
+
+A monocular monochrome camera as well as an Inertial Measurement Unit (IMU) are planed to be the only available on board sensors. For the controller proposed the feedback is directly computed from image features rather than estimating the robot’s pose and using the pose errors as control input.
+
+\nomenclature[ba]{IMU}{Inertial Measurement Unit}
+
+In order to integrate the visual servoing algorithm into the future modular robot system, the algorithm has been designed and tested on a underactuated conventional quadrotor. The aerial robot is implemented within the ROS\footnote{\url{www.ros.org}} framework, where the visual servoing controller developed for this thesis is also integrated. Instead of using real hardware the complete system is simulated using Gazebo\footnote{\url{ www.gazebosim.org}}.
+
+\nomenclature[ba]{ROS}{Robot Operative System}
+
+%%%%%%%%%%
+\section{Aims and Objectives}
+\label{sec:aims-objectives}
+%%%%%%%%%%
+
+The aim of this work is to implement and test a VS control algorithm for a quadrotor, which could be later used by the Flypulator (TODO: Add reference) project. This includes the review of the state of the art with regard to Visual Servoing, the design of a solution and a prototypical implementation with in the ROS framework and simulation with Gazebo of a test case.
+
+The present thesis documents comprehensively the theoretical background, implementation details and results of the conducted work through the following structure. In Chapter \ref{chap:theory-state-art} the theoretical background and state of the art of Visual Servoing is presented. Chapter \ref{chap:srs-sa} gives a description of the system requirements as well as the system decomposition by Structure Analysis (SA) \cite{SA_Braune}. Chapter \ref{chap:algorithm-drescription} describes the solution developed and the algorithms to be tested. Chapter \ref{chap:implementation} deals with the implementation, testing and validation. Finally, Chapter \ref{chap:results-conclusions} contains the final results and conclusions and Chapter \ref{chap:future-work} suggests future improvement and research paths.
+
+\nomenclature[ba]{ROS}{Structure Analysis}
