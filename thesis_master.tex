@@ -1,72 +1,68 @@
-%*******************************************************************************
+%**************************************************
 % * Copyright (c) 2006-2013 
 % * Institute of Automation, Dresden University of Technology
 % * 
-% * All rights reserved. This program and the accompanying materials
-% * are made available under the terms of the Eclipse Public License v1.0 
-% * which accompanies this distribution, and is available at
-% * http://www.eclipse.org/legal/epl-v10.html
 % * 
 % * Contributors:
-% *   Institute of Automation - TU Dresden, Germany 
-% *      - initial API and implementation
-% ******************************************************************************/
+% *  	Institute of Automation - TU Dresden, Germany 
+% *     	- initial API and implementation
+% * 
+% * Author:
+% * 	Pablo Rodríguez Robles
+% * 		- Author of this document
+% * 	
+%**************************************************
 
 \documentclass[
-  screen,          % print optimized version of the thesis, standard option
+	% print,      % print optimized version of the thesis, standard option
                   % alternative:
-%  screen,        % makes the thesis better readable on screens (onesided, coloured links)
+	screen,   % makes the thesis better readable on screens (onesided, coloured links)
                   % use only 'print' OR 'screen'
                   % ATTENTION: 'screen' changes size of text area slightly. Always optimize document WITH
                   % 'print' option first for printing (size of graphics etc.) and convert afterwards
                   % in screen optimized version!
-  listoffigures,  % includes list of figures
-  listoftables,   % includes list of tables
-  listoflistings, % includes list of listings
-  abbrevations,   % includes index of symbols and abbrevations
-  bibIfa,         % citation style (IfA standard), alternatives: bibNumeric, bibHarvard
-  biber,          % bibliography backend, alternatives: bibtex, bibtex8, biber
-  langEN         % define the language (default: langDE)
-%  noIfaLogo,     % prevents the 'IfA' logo from being inculded in the header for the title page and abstract
-%  a5paper        % switches to 'A5' paper size (this may only be used for Dissertations!!!)
+  	listoffigures,  % includes list of figures
+  	listoftables,   % includes list of tables
+  	listoflistings, % includes list of listings
+  	abbrevations,   % includes index of symbols and abbrevations
+  	bibIfa,         % citation style (IfA standard), alternatives: bibNumeric, bibHarvard
+  	biber,          % bibliography backend, alternatives: bibtex, bibtex8, biber
+  	langEN         % define the language (default: langDE)
+	%  noIfaLogo,     % prevents the 'IfA' logo from being inculded in the header for the title page and abstract
+	%  a5paper        % switches to 'A5' paper size (this may only be used for Dissertations!!!)
 ]{ifathesis}
 
 %***********************************
 % General commands
 %***********************************
 
-\ifaThesis{Bachelor Thesis}                               % type of the thesis                
-\ifaAuthor{Pablo Rodríguez Robles}                            % author of the thesis
-\ifaAuthorBirthday{28.02.1996}                         % date of birth
-\ifaAuthorBirthplace{León, Spain}             % place of birth
-\ifaAuthorCourse{Aerospace Engineering}                          % study program
-\ifaAuthorYearOfMatriculation{2014}                    % year of immatriculation
-\ifaKeywords{Visual Servoing, Flying Robot, Quadrotor, Visual Navigation, GNC}    % Keywords included in pdf-file. Could be found e.g. by Windows file search.
-\ifaTitleDE{Image Based Visual Servoing for Aerial Robot}       % geman title of the thesis
-\ifaTitleEN{Image Based Visual Servoing for Aerial Robot}         % english title of the thesis
-\ifaAbstractDE{example_files/00_abstract_de}           % a tex file containing the german abstract
-\ifaAbstractEN{example_files/00_abstract_en__invalid}  % a tex file containing the german abstract
-%\ifaAbbrev{content/abbrev.tex}                                          % a tex file containing the various abbreviations to include into the list of abbreviations (alternatively,
+\ifaThesis{Bachelor Thesis}  % type of the thesis                
+\ifaAuthor{Pablo Rodríguez Robles}  % author of the thesis
+\ifaAuthorBirthday{28.02.1996}  % date of birth
+\ifaAuthorBirthplace{León, Spain}  % place of birth
+\ifaAuthorCourse{Aerospace Engineering}  % study program
+\ifaAuthorYearOfMatriculation{2014}  % year of immatriculation
+\ifaKeywords{Visual Servoing, Flying Robot, Quadrotor, Visual Navigation, GNC}  % Keywords included in pdf-file. Could be found e.g. by Windows file search.
+\ifaTitleDE{Image Based Visual Servoing for Aerial Robot}  % Geman title of the thesis
+\ifaTitleEN{Image Based Visual Servoing for Aerial Robot}  % Gnglish title of the thesis
+\ifaAbstractDE{content/abstract_de}  % a tex file containing the German abstract
+\ifaAbstractEN{content/abstract_en}  % a tex file containing the English abstract
+\ifaAbbrev{content/abbrev}  % a tex file containing the various abbreviations to include into the list of abbreviations (alternatively,
 %\ifaUserListings{}                                    % a tex file containing additional listings to be printed (besides list of figures, tables, and/or listings)
 %\ifaAcknowledegments{}                                % the acknowlegements for the thesis (usually only used for dissertation)
                                                        % these may also be defined in the text where they are first used)
 
-% supervisors of the thesis (for dissertations, this can be used to indicate the reviewers)
+% Supervisors of the thesis
 \ifaSupervisorA{Dipl.-Ing. Chao Yao}
-%\ifaSupervisorB{Dipl.-Ing. Arne Sonnenburg}
-%\ifaSupervisorC{PD Dr.-Ing. Annerose Braune}
-%\ifaSupervisorD{}
-%\ifaSupervisorE{}
-
-\ifaProfessor{Prof. Dr. techn. Klaus Janschek}         % supervising professor as indicated on the topic description
-\ifaDayOfSubmission{27.03.2018}                        % the day the thesis is submitted
-\ifaTopicDescriptionPDF{example_files/00_Aufgabenstellung.pdf} % a PDF file of the topic description
-\ifaAppendix{example_files/appendix}                   % a tex file containing the appendix for the thesis
+\ifaProfessor{Prof. Dr. techn. Klaus Janschek}  % supervising professor as indicated on the topic description
+\ifaDayOfSubmission{27.03.2018}  % the day the thesis is submitted
+\ifaTopicDescriptionPDF{content/Aufgabenstellung.pdf}  % a PDF file of the topic description
+%\ifaAppendix{example_files/appendix}  % a tex file containing the appendix for the thesis
 
 % Literaturverzeichnis angeben
-\bibliography{bibliography}                            % a bib file containing the reference sources
-\ifaBibliographyBeforeAppendix{false}	                 % print the bibliography before or after the appendix ('true' or 'false')
-%\ifaAdditionalContributors{}                           % additional contributors to be included in the statement of authorship
+\bibliography{bibliography}  % a bib file containing the reference sources
+\ifaBibliographyBeforeAppendix{false}  % print the bibliography before or after the appendix ('true' or 'false')
+%\ifaAdditionalContributors{}  % additional contributors to be included in the statement of authorship
 
 %***********************************
 % Special commands for dissertations
@@ -87,20 +83,13 @@
 
 \begin{document} 
 	
-	
-% Chapter 0	
-\input{content/abbrev.tex}
-%\input{content/chapter_00/00_abstract_de.tex}
-%\input{content/chapter_00/00_abstract_en.tex}
-%\input{content/chapter_00/00_Vorab.tex}
-
-% Chapter 1
+% Chapters
 \input{content/chapter_01/chapter_01.tex}
-
-%Chapter 2
 \input{content/chapter_02/chapter_02.tex}
-
-%Chapter 3
 \input{content/chapter_03/chapter_03.tex}
+\input{content/chapter_04/chapter_04.tex}
+\input{content/chapter_05/chapter_05.tex}
+\input{content/chapter_06/chapter_06.tex}
+\input{content/chapter_07/chapter_07.tex}
                               
 \end{document}
