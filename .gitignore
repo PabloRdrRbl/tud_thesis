@@ -1,0 +1,21 @@
+# Ignore 
+.DS_Store
+
+CHANGELOG
+CONTRIBUTING.md
+
+docs/
+
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.lof
+*.log
+*.lol
+*.lot
+*.nlo
+*.out
+*.xml
+*.gz
+*.toc
