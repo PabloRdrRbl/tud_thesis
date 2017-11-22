@@ -16,6 +16,6 @@ docs/
 *.lot
 *.nlo
 *.out
-*.xml
+*.run.xml
 *.gz
 *.toc
