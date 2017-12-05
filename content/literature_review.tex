@@ -1,0 +1,248 @@
+TODO: Some notes to be added to the final text. 
+
+\cite{guenard_2008}
+
+Feature errors are mapped to actuator inputs via the inverse of an image Jacobian matrix.
+
+Possibility of partitioned control. Some degrees of freedom are controlled visually and others by a second sensor modality (see [5] A. Castano and S. Hutchinson, “Visual compliance: Task directed visual servo control,” IEEE Trans. Robot. Autom., vol. 10, no. 3, pp. 334–341, Jun. 1993. and [19] K.P.Khosla,N.Papanikolopoulos,andB.Nelson,“Dynamicsensorplace-
+ment using controlled active vision,” in Proc. IFAC 12th World Congr., Sydney, Australia, 1993, pp. 9.419–9.422.).
+
+Problems of IBVS (see [6] F.Chaumette,“Potentialproblemsofstabilityandconvergenceinimage- based and position-based visual servoing,” in Proc. Conf. Vis. Control, LNCIS, 1998, vol. 237, pp. 66–78.).
+
+In the classical approach to IBVS it is necessary to estimate the depth of each of the features. Alternative approaches include:
+
+Partial pose estimation (see [24] E. Malis, F. Chaumette, and S. Boudet, “2-1/2-D visual servoing,” IEEE Trans. Robot. Autom., vol. 15, no. 2, pp. 238–250, Apr. 1999.).
+
+Adaptive control (see [28] N. Papanikolopoulos, P. K. Khosla, and T. Kanade, “Adaptive robot visual tracking,” in Proc. Amer. Control Conf., 1991, pp. 962–967.). 
+
+Estimation of the image Jacobian using quasi-Newton techniques (see [29] J. A. Piepmeier, “A dynamic quasi-newton method for model independent visual servoing,” Ph.D. dissertation, Georgia Inst.Technol., Atlanta, GA, Jul. 1999.).
+
+Current preferred approach is using hybrid control. Where translational and rotational control are treated separately (see [8] P.I.CorkeandS.A.Hutchinson,“Anewpartitionedapproachtoimage- based visual servo control,” presented at the Int. Symp. Robot., Montreal, QC, Canada, May 2000. 
+[10] K. Deguchi, “Optimal motion control for image-based visual servoing by decoupling translation and rotation,” in Proc. Int. Conf. Intell. Robots Syst., 1998, pp. 705–711. [24] E. Malis, F. Chaumette, and S. Boudet, “2-1/2-D visual servoing,” IEEE Trans. Robot. Autom., vol. 15, no. 2, pp. 238–250, Apr. 1999. [27] G.Morel,T.Liebezeit,J.Szewczyk,S.Boudet,andJ.Pot,“Explicitinco- poration of 2D constraints in vision based control of robot manipulators,” in Lecture Notes in Control and Information Sciences, vol. 250, P. Corke and J. Trevelyan, Eds. New York: Springer-Verlag, 1999, pp. 99– 108.) 
+
+IBVS has been traditionally developed for serial actuators. For these systems a low-level joint controller is used to compensate the system dynamics. As a result position control can be done at the level of kinematics, that is, imposing velocities instead of accelerations, jerk or snap). 
+
+For fully integrated system models (see [3] A. Astolfi, L. Hsu, M. Netto, and R. Ortega, “Two solutions to the adaptive visual servoing problem,” IEEE Trans. Robot. Autom., vol. 18, no. 3, pp. 387–392, Jun. 2002. 
+[34] E. Zergeroglu, D. Dawson, M. de Queiroz , and S. Nagarkatti, “Robust visual-servo control of robot manipulators in the presence of uncertainty,” in Proc. 38th Conf. Decision Control, 1999, pp. 4137–4142.)
+
+Underactuated system dynamics (see [14] T. Hamel and R. Mahony, “Visual servoing of an under-actuated dynamic rigid-body system: An image based approach,” IEEE Trans. Robot. Au- tom., vol. 18, no. 2, pp. 187–198, Apr. 2002. [26] LMejias,SSaripalli,G.SSukhatme,andPCervera,“Visualservoingfor tracking features in urban areas using an autonomous helicopter,” J. Field Robot., vol. 23, no. 3–4, pp. 185–199, 2006.)
+
+Difficulty of applying IBVS to dynamic models lays on the high coupling of the image Jacobian, here PBVS is an advantage since it avoids the formulation of it.
+
+This paper uses IBVS with underactuated dynamics with a augmented visual feature by means of inertial direction, obtained from a partial attitude pose-estimation algorithm (see [14] T. Hamel and R. Mahony, “Visual servoing of an under-actuated dynamic rigid-body system: An image based approach,” IEEE Trans. Robot. Au- tom., vol. 18, no. 2, pp. 187–198, Apr. 2002.).
+
+This paper dynamic hovering UAV. Assumes direct measurement  of the translational velocity (see [15] T. Hamel and R. Mahony, “Image based visual servo-control for a class of aerial robotic systems,” Automatica, vol. 43, pp. 1975–1983, 2007.).
+
+This paper full dynamics for translational motion. First-order unnormalized spherical moment for position and optic flow for velocity (see [22] R. Mahony and T. Hamel, “Robust trajectory tracking for a scale model autonomous helicopter,” Int. J. Non-linear Robust Control, vol. 14, pp. 1035–1059, 2004.).
+
+The approaches presented above have been found to have poor sensitivity and conditioning (TODO: What are sensitivity and conditioning?).
+
+The current paper teats dynamics for stationary and quasi-stationary flight. The paper is based on (see 
+[14] T. Hamel and R. Mahony, “Visual servoing of an under-actuated dynamic rigid-body system: An image based approach,” IEEE Trans. Robot. Au- tom., vol. 18, no. 2, pp. 187–198, Apr. 2002.). 
+
+The paper uses image features with passivity-like properties.
+
+A new visual error is formulated so it improves the conditioning of the image Jacobian.
+
+Nonlinear controller integrating linear and rotational dynamics. Uses a Lyapunov function to ensure exponential stabilization of the dynamics.
+
+Explicit complementary filter to get attitude from IMU (see [16] T. Hamel and R. Mahony, “Attitude estimation on SO(3) based on direct inertial measurements,” in Proc. Int. Conf. Robot. Autom. ICRA 2006, Orlando, FL, May 15–19, pp. 2170–2175.).
+
+Translational velocity derived from a nonlinear filter that fuses IMU and visual data.
+
+Section II of the paper contains dynamic model for a hovering UAV (quasi-stationary conditions).
+
+Part III deals with the choice of image features. 
+
+Part IIIa:
+
+First consider kinematics of an image point under spherical projection (see: [4] O.Bourquardez,R.Mahony,T.Hamel,andF.Chaumette,“Stabilityand performance of image based visual servo control using first order spherical image moments,” in Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. IROS 2006, Beijing, China, Oct., pp. 4304–4309. [14] T. Hamel and R. Mahony, “Visual servoing of an under-actuated dynamic rigid-body system: An image based approach,” IEEE Trans. Robot. Au- tom., vol. 18, no. 2, pp. 187–198, Apr. 2002.)
+
+Part IIIb
+
+Define centroid of the image. Centroid depends on camera geometry (i.e. spherical projection, perspective projection). 
+
+Advantages of using image centroids: not necessary to match the observed image points with desired features as would be necessary in a classical image-based visual servo control, the calculation of the image centroid is highly robust to pixel noise, and centroids are easily computed in real time.
+
+Disadvantages measures only two degrees of freedom associated with the direction of centroid with respect to the body-fixed-frame axes of the camera (image point coordinates).
+
+Intuitively, as the camera approaches the geometric centrer of the target points for a spherical camera geometry, the observed image points spread out around the focal point of the camera, decreasing the norm of q (more about this in the paper).
+
+In the paper, augment the image information with inertial information acquired from a standard IMU.
+
+The natural image-based error is the difference between the measured centroid and the target vector expressed in the camera frame. Include also image error kinematics.
+
+For a fully actuated kinematic system: Additional error criterion necessary for orientation control.
+ 
+ (TODO: very important). For an underactuated dynamic system the attitude dynamics are used to control the orientation of the vehicle thrust, which provides the control of the system position dynamics.  It is physically impossible to separately stabilize the attitude and position of the camera. The error criterion chosen regulates only the position of the rigid body and the orientation regulation is derived as a consequence of the system dynamics.
+
+Part IV Kinematic control design
+
+Lyapunov control for the kinematics of the translational motion based on the visual error.
+
+Part V Control design for the full dynamics
+
+Since the rigid body system considered is underactuated, the force input F cannot be directly assigned.
+
+Different solutions may be used to stabilize the freedom of yaw rotation in the attitude dynamics. But a simple damping term can be used to stop unwanted rotation without specifying a specific yaw set point.
+
+The target considered consist of the four black marks on the vertices of a stationary planar square. A standard computer vision segmentation algorithm extracts the marks from the background and computes the central moment of each mark.
+
+The central moments are trandormed int unit-norm spherical image plane representation using the camera calibration matrix provided by the manufacturer.
+
+Four image points are obtained.
+
+The points are summed to compute the unnormalized spherical centroid.
+
+The drone is flow under manual control into the neighbourhood of the target to ensure the target mark are visible before the control algorithm is engaged.
+
+The closed-loop performance of the system maintains an error of approximately 10 cm around the desired position.
+
+Most significant source of error is due to aerodynamic disturbances.
+
+\cite{bourquardez_2009}
+
+VS algorithms for general robotics (see [7], [10], [19], [23]).
+
+VS applied to quadrotors (see [1], [25]).
+
+In PBVS the estimated pose can be used directly in the control law, or as part of a scheme fusing visual data and inertial measurements.
+
+More IBVS for quadrotors (see [4], [17], and [30]).
+
+Explicit system dynamics in IBVS for robotic manipulators (see [9], [12], [20]).
+
+Explicit system dynamics in IBVS for aerial vehicles (see [15], [30]).
+
+Separating the control problem into an inner loop and an outer position control loop. The inner attitude loop is run at high gain using inputs from inertial sensors, rate gyrometers, and accelerometers acquired at high data rate, while the outer loop is run at low gain using video input from the camera (see [26], [27]).
+
+The outer (visual servo) loop provides set points for the inner attitude loop and classical time-scale separation and high-gain arguments can be used to ensure stability of the closed-loop system (see [1], [11] E. Frazzoli, M. A. Dahleh, and E. Feron, “Real-time motion planning for agile autonomous vehicles,” J. Guid. Control Dyn., vol. 25, no. 1, pp. 116–129, 2002., [15], [27]).
+
+In the paper inner/outer loop stability for granted (see [14] N. Guenard, T. Hamel, and L. Eck, “Control law for the tele operation of an unmanned aerial vehicle known as an X4-flyer,” in Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst., Beijing, China, Oct. 2006, pp. 3249–3254.) and concentrate on the specific properties of the outer IBVS control design.
+
+(TODO: Important to check [14] of this paper]).
+
+(TODO: Important). Paper is able to design a kinematic controller because of the use of an inner/outer loop.
+
+Lower level loop ensures the stabilization of the system.
+
+Use of zero and first-order image moments as primary visual features for the control design. (see [15], [17], [28] O.TahriandF.Chaumette,“Point-basedandregion-basedimagemoments for visual servoing of planar objects,” IEEE Trans. Robot., vol. 1, no. 6, pp. 1116–1127, Dec. 2005.).
+
+As in [28] it seems that zero and first-order image moments are particularly advantageous for planar objects.
+
+(TODO: reason why it is better to use spherical moments). Perspective projection moments with suitable scaling along with a classical IBVS control design lead to satisfactory transients and asymptotic stability of the closed-loop system when the image plane remains parallel to a planar target.
+
+(TODO: Discuss with Chao). The system response may lack of robustness for aggressive manoeuvres. 
+
+Part II Perspective projection algorithm
+
+IBVS controls the translation kinematics of an aerial vehicle.
+
+Perspective projection image moments allow to obtain a quasi-linear and decoupled link between the image space and the task space (see [28] O.TahriandF.Chaumette,“Point-basedandregion-basedimagemoments for visual servoing of planar objects,” IEEE Trans. Robot., vol. 1, no. 6, pp. 1116–1127, Dec. 2005.
+).
+
+TODO: Important to see [28] for more information about perspective projection image moments.
+
+Classical IBVS control aims to impose linear exponential stability on the image error kinematics.
+
+Generally, the interaction terms L_v and L_\omega depend nonlinearly on the state of the system and cannot be reconstructed exactly from the observed visual data.
+
+Using the visual feature proposed is of particular interest since L_v = -I_3 in the case where the camera image plane is parallel to the target plane. Meaning that linear velocity of the camera and velocity of the image point are the same.
+
+Since the link between image space an task space is linear and decoupled, the control scheme is known to lead to satisfactory closed-loop behaviour for holonomic robot.
+
+This procedure is equivalent to position-based visual servoing, but without any pose estimation required.
+
+The camera is mounted to point direclty downward in the quadrotor and the image and target plane are never more than a couple of degrees offset. The motion of the quadrotor is smooth and slow and the value of L_\omega \omega is small compared with the error \lambda e. Giving the following approximation v = \lamda e.
+
+This approximation does not require the estimation of any 3d parameters and can be implemented based only on the observed image features s.
+
+The limitation of this approach lies on its dependence on the particular geometry of the application considered and the requirement to consider only smooth slow trajectories of the vehicle. For aggressive manoeuvres, or in the case that the parallel target plane assumption is invalidated for a particular assumption, the approximation of L_v = -I_3 will fail. And more importantly the approximation L_\omega \omega = 0 may also fail. (TODO: Why is this more important?).
+
+This second issue introduces a significant dynamic disturbance in the system response that cannot be cancelled directly without the risk of introducing zero dynamic effects into the closed-loop response similar to those studied in recent research (see [11], [18]).
+
+The potential limitations of the classical IBVS control design based on perspective projection features motivate us to consider a class of spherical projection features and nonlinear control design techniques.
+
+Part III Spherical projection
+
+Part IIIa Modeling
+
+Unnormalized first-order spherical image moment along with an inertial goal vector to generate an image error (see [17]) (TODO: is using inertial goal vector, that means IMU is needed).
+
+Thanks to the spherical camera geometry, the third entry of the centroid in nonlinerarly related to the depth of the camera from the observed target constellation (TODO: Search more on spherical cameras).
+
+The reason for choosing error in this manner is that it ensures the passivity property.
+
+It can be show that |\delta| and \delta_0 = R \delta are a function of position only (see [6]). This property can be exploited to control the translational dynamics independently of the rotations.
+
+Part IIIb Proportional control
+
+The simple control law v = k_delta \delta is thus not suitable in practice.
+
+Part IIIc Partitioned control
+
+Partitioned approach (see [8], [15]).
+
+The idea is to separate the visual error term into two criteria with different sensitivity.
+
+Part IIId Rescaled image feature
+
+Part IIIE GAS control law with modified rescaled image feature
+
+Part IV Analysis
+
+Table I gives summary of the properties for each control scheme in therm of stability, transient behavior, linearity and passivity.
+
+Two of the most important properties are good transient conditioning (direct convergence of all elements of position in task space without any observed divergence or peaking transients), and balanced local exponential stability (equal asymptotic rate of convergence in all axes of the position in task space).
+
+Part V Experimental results and comparison of some control laws
+
+Part VA
+
+Experimental conditions
+
+Prototype description
+
+Embedded loop allowing the attitude stabilization run at 166 Hz and the time to reach an attitude order is about 300 ms. 
+
+Attitude command between the quadrotor and a ground station.
+
+A camera situated below the quadrotor is embedded and observes a target on the ground, consisting of four black marks on the vertices os a planar rectangle.
+
+
+A 3D estimation of the vehicle position with respect to the target is also obtained by fusing the data of the embedded IMU and the visual data in a particle filter (see [3]).
+
+(TODO: Important). In this paper, only 2D visual information is used in the outer IBVS control loop for position regulation.
+
+Experimental protocol
+
+Part VB
+
+The classical perspective image moments controller provides a linear correspondence between the image space and task space as long as the relative rotation between image and target plane is small. The resulting closed-loop systems response is expected to be satisfactory both in transient performance and asymptotic convergence and in both image and task space.
+
+System is neither GAS nor passive (TODO: check what GAS and passive mean).
+
+Is expected that strong rotational motion will significantly disturb the performance of the system.
+
+\cite{bourquardez_stability_2006}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Image-based control for aerial manipulation
+Rafik Mebarki and Vincenzo Lippiello
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+From project ARAS
+
+UAV equipped with a robotic arm with the capability of automatically positioning elements on target objects.
+
+Controls both the UAV and the manipulator using visual servoing.
+
+The robotic system consists of a rotary-wing aircraft equipped with a robot manipulator and an on-board camera. 
+
+The desired task is the automatic positioning of an assembly structure (object) carried by the robotic arm on a visual target, e.g. grasping an assembly part and positioning it in a desired location.
+
+This paper mobile platform equipped with a manipulator and an eye-in-hand camera is considered in the context of visual servoing (see 
+[10] A. De luca, G. Oriolo, and P. Robuffo Gior- dano, “Image-based visual servoing schemes for nonholonomic mobile manipulators,” Robotica, vol. 25, pp. 131–145, Mar. 2007.). The main control task consists in automatically positioning two visual feature points at a desired image location. By projecting into the null space of the system Jacobian, joint limits avoidance is considered as a secondary task, but so it is not guaranteed. Moreover, the case of large initial errors is not explicitly addressed.
+
+
+

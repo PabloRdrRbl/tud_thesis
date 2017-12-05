@@ -1,0 +1,63 @@
+\documentclass[a4paper, 11pt]{report}
+\usepackage{fullpage} % changes the margin
+
+\begin{document}
+
+\chapter{Literature Review for the Topic: Visual Servoing for Aerieal Maniputation}
+
+\section{High Accuracy Visual Servoing for Aerial Manipulation using a 7 Degrees of Freedom Industrial Manipulator}
+
+Maximilian Laiacker, Felix Huber and Konstantin Kondak
+
+2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) 
+Daejeon Convention Center
+October 9-14, 2016, Daejeon, Korea
+
+\subsection{Introduction}
+
+\begin{itemize}
+	\item  System composed of a Flettner-helicopter and 7 DoF manipulator.
+	\item Aerial manipulation systems can be used to do this dangerous, difficult or expensive work in locations that can only be reached while flying. Examples are maintenance and inspection of tall buildings, power lines, chemical plants, bridges or work in mountain areas. Another example is manipulation and in-situ measurements during nuclear, chemical or biological disasters and accidents.
+	\item Successful aerial manipulation and building of complex structures have been presented in [1], [2] and [3].
+	\item An outdoor aerial manipulator using an 7 DoF manipulator and on-board visual perception has been studied in [4].
+	\item A visual servoing control for aerial manipulation using on board cameras and marker detection to grasp a bar achieving 1cm accuracy is presented in [5]. (TODO: Check reference [5]).
+	\item At this scale the flying platform dynamic has a great impact on the accuracy of the manipulator end-effector or tool center point (TCP).
+	\item Attention was payed to the coordinated control of arm and helicopter as well as to the active compensation of the arm movement in the helicopter controller.
+	\item The dominant factor for the accuracy of a flying manipulator however is the time it takes to measure a position difference and to compensate it using the manipulator or the flying platform.
+\end{itemize}
+
+\subsection{System Overview}
+
+\begin{itemize}
+	\item The cameras are mounted to the front of the helicopter looking downwards.
+	\item This position was chosen because the manipulator workspace between the landing skids is inside the field of view of the cameras.
+\end{itemize}
+
+\subsection{Robust Multi Marker Object Localization}
+
+\begin{itemize}
+	\item The view from the on-board camera towards the object will likely be occluded.
+	\item A possible solution would be to mount cameras to the manipulator. This sensor position is problematic when the manipulator is very close to the object. The object could be out of focus or only a very small portion of the object would be in the field of view making localization difficult.
+	\item To compensate object occlusions we propose an algo- rithm that uses the localization of objects from the scene surrounding the target object. When the relative position of the surrounding objects are known this information can be used to indirectly localize the target object. We simplified the object localization task by using known artificial markers which provide in a very low false positive detection rate and accurate 6 DoF localization.
+\end{itemize}
+
+\subsection{Automatic Hand-Eye Calibration Using Marker Localization}
+
+\begin{itemize}
+	\item The transformation from the camera frame to the manipulator base frame has to be known as precise as possible to reduce the static positioning error during visual servoing.
+\end{itemize}
+
+\section{Evaluation of Visual Servoing Control of Aerial Manipulators Using Test Gantry Emulation}
+
+Todd W. Danko and Paul Y. Oh
+
+2014 International Conference on Unmanned Aircraft Systems (ICUAS) 
+May 27-30, 2014. Orlando, FL, USA
+
+\subsection{}
+
+\begin{itemize}
+	\item
+\end{itemize}
+
+\end{document}

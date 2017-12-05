@@ -22,7 +22,7 @@ Here, $\bm{m}(t)$ is a set of image measurements (e.g. the image coordinates of 
 
 For the present case, where the target is not moving,  $\bm{s}^\ast$ and the changes in $\bm{s}$ depend only on the camera motion.
 
-There exist two main variants of Visual Servoing depending on how the features vector $\bm{s}$ is defined. On the one hand, Image Based Visual Servoing (IBVS) takes as $\bm{s}$ a set of features already available within the image data. On the other hand, Position Based Visual Servoing (PBVS) considers for $\bm{s}$ a set of 3D parameters that must be estimated from the image data.
+There exist two main variants of Visual Servoing depending on how the features vector $\bm{s}$ is defined. On the one hand, Image Based Visual Servoing (IBVS) takes as $\bm{s}$ a set of features already available within the image data (TODO it can be seen as a control of the features in the image plan such that moving the features to a goal configuration implicitly results in the task being accomplished \cite{espiau_1992}). On the other hand, Position Based Visual Servoing (PBVS) considers for $\bm{s}$ a set of 3D parameters that must be estimated from the image data (TODO: Add that it is a cartesian motion planing problem).
 
 \nomenclature[ba]{IBVS}{Image Based Visual Servoing}
 \nomenclature[ba]{PBVS}{Position Based Visual Servoing}
@@ -137,3 +137,91 @@ When the current depth $Z$ of each point is known, there is no need of approxima
 
 A second alternative is to use $\widehat{\bm{L_e}^+} = \bm{L_{e^\ast}}^+$, where $\bm{L_{e^\ast}}$ is the value of $\bm{L_{e}}$ for the desired position ($\bm{e} = \bm{e}^\ast = 0$) (see \cite{espiau_1992}). Here, the depth parameter only needs to be estimated once for every point.
 
+\section{State of the Art}
+
+\subsection{Visual Servoing for Aerial Manipulators}
+
+% (TODO: Tabla con tipo de vehículo, dofs del brazo, tipo de control, tipo de cámara, feature)
+% (TODO: Very important). Vision is a passive and cheap sensor. Visual odometry does no provide the ability to control the vehicle with respect to a specific target. So not useful for manipulation tasks.
+
+% (TODO: Para introducción)
+% Particularly, rotary-wing vehicles possess the capability of holding stationary and therefore passing through cumbersome spaces. This makes them relevant candidates for applications such as sensing and surveillance,
+%Aerial manipulation systems can be used to do this dangerous, difficult or expensive work in locations that can only be reached while flying. Examples are maintenance and inspection of tall buildings, power lines, chemical plants, bridges or work in mountain areas. Another example is manipulation and in-situ measurements during nuclear, chemical or biological disas- ters and accidents. 
+% (TODO: No habla de visión, solo fuentes que usan robots para contruir estructuras. Todos usan indoor y control externo) Successful aerial manipulation and building of complex structures have been presented in [1], [2] and [3].
+% (TODO: Important. Si brazo usado para compensar under-actuation, por qué usar ambos?)Multirotors, and in particular quadrotors such as the one used in this work, are underactuated platforms. That is, they can change their torque load and thrust/lift by altering the velocity of the propellers, with only four degrees-of-freedom (DOF), one for the thrust and three for the torques. But, as shown in this paper, the attachment of a manipulator arm to the base of the robot can be seen as a strategy to alleviate underactuation allowing UAM to perform complex tasks.
+
+
+% (TODO: Main reference to image moments [17, mebarki_exploiting_2013].)
+
+In this section a perspective of Visual Servoing applied to aerial manipulators is presented. The main literature is analyzed and some of the common characteristics of the approaches followed by them are highlighted.
+
+% Aerial gripping
+
+Some publications related to the University of Pennsylvania GRASP Laboratory\footnote{\url{https://www.grasp.upenn.edu}}  (see \cite{thomas_toward_2014} and \cite{thomas_visual_2016}) have studied the vision-based localization and servoing of quadrotors in grasping and perching tasks. However, the emphasis of these publications lays on the generation of dynamically-feasible trajectories in the image space, thus second order system control is performed instead of the most common kinematic control strategy. These vehicles are not manipulators in the sense of the rest of the approaches presented in this section, since the main task here is hanging from structures and grasping targets by means of aggressive, thus dynamical, maneuvers. In addition to that, the actuator used is not a high-DOF actuator, but a 1 DOF gripper.  
+
+In the last years, a concrete aerial manipulator architecture has been popularized, for example in the context of the European projects ARCAS\footnote{\url{http://www.arcas-project.eu}} and AEROARMS\footnote{\url{http://www.arcas-project.eu}}. These aerial manipulators have usually the task of collecting an structural element from its initial position and fly it to a final position, where the element is used to assemble a strut structure. The main configuration of such a robot is an under-actuated rotary-wing aircraft (usually a quadrotor) and a robotic manipulator arm. Different degrees of freedom (DOF) are used for the arm and different camera placements are considered.
+ 
+  \nomenclature[ba]{DOF}{Degree of Freedom}
+ 
+ The usual implementation considers the simultaneous control (at the velocity level) of the mobile platform (i.e. quadrotor) and the manipulator for such a grasping task. Since the sum of the 4 DOF of a quadrotor plus the multiple-DOF of a serial manipulator leads to a redundant system, the possibility of choosing degrees of freedom is used to realize different subtasks (e.g. joint reaching prevention). The Visual Servoing controller chosen generates velocity inputs both for the manipulator joints (i.e. $\bm{\dot{q}}$) and for the quadrotor (i.e. translational velocity $\bm{v}$ and rotational velocity $\omega_z$). The use of a weighted pseudo-inverse allows to favor the control of the mobile platform when the distances to the target are bigger and increase the manipulator use when it is close to the target.
+ 
+ % \cite{mebarki_image-based_2014}
+ 
+ \cite{mebarki_image-based_2014} propose a quadrotor equipped with a 5 DOF arm. Traditional Visual Servoing distinguishes between two different classes of camera configuration: eye-to-hand (fixed in the workspace) and eye-on-hand (mounted on the mobile platform). In this paper a new configuration for the camera is presented, called onboard-eye-to-hand, i.e. the camera is placed on-board of the robot while it observes the manipulator. In this way, the manipulator can accomplish large rotations while the target is not left out of the camera field of view, as happens in the eye-in-hand configuration. Furthermore, for the case of eye-in-hand configuration, during assembly tasks the manipulator end-effector can contact or impact with objects and damage or obstruct the camera. Thanks to the onboard-eye-to-hand camera configuration the paper is able to introduce a variation of the IBVS approach, called Self Visual Servoing (SVS). Where the error nullified comes directly form the image itself (hence the adjective self) an there is no need for a target image. The servo controller implemented has two different tasks. The main task is position the feature points at a target position on the target object and the second one the end-effector motion. Error formulation decouples both tasks and a wighted pseudo-inverse is used to provide a different gain for the arm joints rates $\bm{\dot{q}}$ and for the UAV velocities $\bm{v}$ and $\omega_z$.
+ 
+ \nomenclature[ba]{SVS}{Self Visual Servoing}
+ 
+ % \cite{mebarki_exploiting_2013}
+ % \cite{mebarki_cross-coupled_2014}
+ 
+ The image moments as features for the Visual Servoing are proposed in \cite{mebarki_exploiting_2013} for the previous system. Furthermore, aerial manipulators have to cope with the change of the center of mass during flight due to the effect of suspended loads \cite{palunko_2012}. To achieve this behavior, low-level attitude controllers are usually designed to compensate this effects using Cartesian impedance control \cite{lippiello_impedance_2012} or adaptive control. To this end, the system includes a controller to reduce dynamic effects by vertically aligning the arm center of gravity to the multirotor gravitational vector, along with one that keeps the arm close to a desired configuration of high manipulability and avoiding arm joint limits. In \cite{mebarki_cross-coupled_2014}, the author completes the robot with a nonlinear low-level controller that thanks to a integral  approach allows the inclusion of the dynamic coupling of the UAV and the robotic arm, while the control of the system through the velocities provided by the IBVS high-level is maintained.
+ 
+% \cite{danko_evaluation_2014}
+
+In this case the source (see \cite{danko_evaluation_2014}) includes as host a gantry used to emulate an UAV and a 6 DOF manipulator with an end-effector mounted camera (i.e. eye-in-hand). Coordination of redundant degrees of freedom by means of partitioned control. Visual servoing is used to drive the end-effector pose relative to a target thanks to the use of feature points and their desired positions.
+
+% \cite{lippiello_hybrid_2016}
+% Uses Gazebo for simulations
+
+\cite{lippiello_hybrid_2016} uses a hybrid-control framework the main benefits of both IBVS and PBVS schemes to control a octorotor with a 6 DOF arm. Kinematic redundancy of the end-effector is used to accomplish secondary tasks and lead by a hierarchical task-composition algorithm, in conjunction with a smooth activation mechanism for the tasks.
+
+% \cite{laiacker_high_2016}
+
+
+DLR's work within ARCAS project \cite{laiacker_high_2016} uses of an helicopter and a 7 DOF manipulator. The helicopter is a bigger robot when compared to the rest of the systems, with more than 1 m from manipulator to center of gravity. Influence of the arm movement is significant to the helicopter flight and is actively compensated by the robot controller by means of a coordinated control of both elements. The paper discusses performance and accuracy in aerial manipulation, where the time it takes between the measurement of a position difference and its compensation using the manipulator or the flying platform is the main factor. Additionally, the work presents a multi-marker approach to compensate occlusion of the target marker by the manipulator derived of the onboard-eye-to-hand camera configuration.
+
+
+% \cite{kim_vision-guided_2016}
+% (TODO: \cite{kim_vision-guided_2016} contains signal flow char for image processing and IBVS)
+
+A combination of kinematic and dynamic models to develop a passivity-based adaptive controller which can be applied on both position and velocity control is proposed in \cite{kim_vision-guided_2016}. Position control is used for waypoint tracking and landing, while velocity control is triggered for target servoing. The robot is a quadrotor with a 3 DOF arm and an eye-in-hand camera. The work uses IBVS with image moments as visual features and tries to solve two problems of the method when applied to aerial manipulators (under-actuated system). Firstly, movements of the manipulator produce movement of the camera, thus making probable that the target object is taken out of its field of view. For this reason a fisheye camera is used. Secondly, the under-actuation of the robot is corrected introducing a image modification method. Velocity weighting of the Jacobian matrix in accordance of the situation is used for the simultaneous control of UAV and manipulator.
+
+% \cite{santamaria-navarro_uncalibrated_2017}
+% Uses Gazebo
+
+% (TODO: ARCAS bot [santamaria-navarro_uncalibrated_2017] is called Kinton, avaible on the internet). 
+
+In \cite{santamaria-navarro_uncalibrated_2017} redundant manipulation and hierarchical control law are combined with a new variation of the IBVS that does not need the camera parameters. The system establishes as primary task the avoidance of obstacles, as well as several secondary tasks. The visual servo strategy is used to drive the arm end-effector to a desired position and orientation by using a camera attached to it. The configuration used is a 4 DOF quadrotor and equipped with a 6 DOF robotic arm. In the common IBVS approaches, Jacobian or interaction matrix, which relates the camera velocity with the image feature velocities, depends on a priori knowledge of the intrinsic camera parameters. The paper presents a variation of IBVS called Uncalibrated IBVS, the approach uses the barycenter of the features as control points. The method recovers the coordinates of these control points and also the camera focal length, with this data a new formulation of the Jacobian is constructed. The system also compensates by means of a hierarchical algorithm the position of the manipulator.
+
+\begin{table}[]
+	\centering
+	\caption{My caption}
+	\label{my-label}
+	\begin{tabular}{|l|l|l|l|l|l|l|}
+		\hline
+		Reference                                                       & Vehicle    & Manipulator's DOF & Camera configuration & VS Type           & Visual feature                                   & Comment                                                            \\ \hline
+		\cite{thomas_toward_2014} and \cite{thomas_visual_2016} & quadrotor  & 1                 & eye-in-hand          & IBVS              & Cylinder parameters                              & agressive maneuvers                                                \\ \hline
+		\cite{mebarki_image-based_2014}                             & quadrotor  & 5                 & onboard-eye-to-hand  & SVS               & points (no target)                               & -                                                                  \\ \hline
+		\cite{mebarki_exploiting_2013}                              & quadrotor  & 5                 & onboard-eye-to-hand  & SVS               & perspective projection image moments (no target) & -                                                                  \\ \hline
+		\cite{mebarki_cross-coupled_2014}                           & quadrotor  & 5                 & onboard-eye-to-hand  & SVS               & points (no target)                               & low-lever controller for dynamic coupling robot-arm                \\ \hline
+		\cite{danko_evaluation_2014}                                & grantry    & 6                 & eye-in-hand          & IBVS              & points                                           & gantry used to emulate an UAV                                      \\ \hline
+		\cite{lippiello_hybrid_2016}                                & octortor   & 6                 & onboard-eye-to-hand  & Hybrid VS         & points                                           & hierarchical task-composition algorithm, smooth task activation    \\ \hline
+		\cite{laiacker_high_2016}                                   & helicopter & 7                 & onboard-eye-to-hand  & IBVS              & points                                           & discusses performance and accuracy, multi-marker approach          \\ \hline
+		\cite{kim_vision-guided_2016}                               & quadrotor  & 3                 & eye-in-hand          & IBVS              & corrected perspective projection image moments   & adaptive controller for both position and velocity, fisheye camera \\ \hline
+		\cite{santamaria-navarro_uncalibrated_2017}                 & quadrotor  & 6                 & eye-in-hand          & Uncalibrated IBVS & blobs' barycenters                               & hierarchical task-composition algorithm                            \\ \hline
+	\end{tabular}
+\end{table}
+
+
+
+ 
