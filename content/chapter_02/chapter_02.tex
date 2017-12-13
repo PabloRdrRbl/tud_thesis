@@ -139,6 +139,18 @@ A second alternative is to use $\widehat{\bm{L_e}^+} = \bm{L_{e^\ast}}^+$, where
 
 \section{State of the Art}
 
+\subsection{Visual Servoing for Aerial Robots}
+
+In this section the literature on the use of Visual Servoing to control de translation of aerial robots is analyzed. The focus of this review is on the IBVS approach, where image feature errors between the current and target image are mapped to actuator inputs through the inverse of the Jacobian matrix. The different approaches discus the alternatives on feature selection, Jacobian matrix construction and different control strategies to make the error converge to zero, and with it, the relative pose between UAV and target object will converge to the desired one.
+
+One of the problems of the classical formulation of IBVS is the necessity to estimate the depth of each of the features. In the past several approaches have been taken to cope with this problem, such as: partial pose estimation (see \cite{malis_2_1999}), adaptive control (see \cite{Papanikolopoulos}) or estimation of the Jacobian using quasi-Newton methods (see \cite{Piepmeier}). An alternative is to use a hybrid control approach by treating rotational and translational control separately. However, it is important to bear in mind that due to the under-actuated dynamics of an usual 4 DOF quadrotor, it is only possible to control the three linear velocities and the yaw (rotational) speed. While the other two rotational speeds, roll and pith, are used to move the thrust vectors of the propellers and thus generate movement on the horizontal plane.
+
+Most of the Visual Servoing methods have been developed for serial manipulators. For this kind of robot, a low-level actuator is usually employed to compensate the dynamic behavior of the system, making possible to control it with velocity commands as a first order system. For a full-dynamics quadrotor model accounting for aggressive maneuvers this is not at all the case, since it is a fourth order system. Thus, other strategies are usually considered to control such a robot (see\cite{Mellinger}).
+
+% \cite{guenard_2008}
+
+Uses 
+
 \subsection{Visual Servoing for Aerial Manipulators}
 
 % (TODO: Tabla con tipo de vehículo, dofs del brazo, tipo de control, tipo de cámara, feature)
