@@ -1,4 +1,4 @@
-%!TEX root = ../thesis_main.tex
+%!TEX root = ../../thesis_master.tex
 
 %%%%%%%%%%
 \chapter{Theoretical Background and State of the Art}
@@ -7,11 +7,19 @@
 
 \section{Visual Servoing Theoretical Basics}
 
+% (TODO: see brach theoretical-backgroud)
+
 \section{State of the Art}
 
 \subsection{Visual Servoing for Aerial Robots}
 
 In this section, the literature on the use of Visual Servoing to control de translation of aerial robots is analyzed. The focus of this review is on the IBVS approach, where image feature errors between the current and target image are mapped to actuator inputs through the inverse of the Jacobian matrix. The different approaches presented complete the basic IBVS formulation with alternatives on feature selection, Jacobian matrix construction and different control strategies to make the error converge to zero, and with it, the relative pose between UAV and target object will converge to the desired one.
+
+The task for the system in this case consist of position the aerial robot in a desired position with respect to a 2D target using only the translation an rotation of the quadrotor.
+
+In \cite{ceren_vision-based_2009}, the desired velocities are computed with the visual information and a PD controller is used to make the robot follow the chosen velocities. The visual servo controller here is very simple, using feature points and a simple proportional law to control the kinematics of the robot. The VS technique is not explained in detail since it uses the MATLAB Visual Servoing Toolbox\footnote{\url{https://sourceforge.net/projects/vstoolbox/}}. However, the paper is a good reference when it comes to the system description of the most simple approach to follow for the control of a quadrotor using visual servoing.
+
+\nomenclature[ba]{PD}{Proportional Derivative}
 
 The Visual Servoing research was originally developed for serial manipulators. In order to translate these techniques to aerial robots there are different aspects that may be considered:
 
@@ -25,13 +33,19 @@ To cope with this problems different solutions has been proposed and applied for
 
  In the past, several approaches have been taken to face the problem of depth estimation, such as: partial pose estimation (see \cite{malis_2_1999}), adaptive control (see \cite{Papanikolopoulos}) or estimation of the Jacobian using quasi-Newton methods (see \cite{Piepmeier}). Nowadays, the most frequent approach is the use of a partitioned control that allows the uncoupling of translational and rotational degrees of freedom\footnote{However, it is important to bear in mind that due to the under-actuated dynamics of an usual 4 DOF quadrotor, it is only possible to control the three linear velocities and the yaw (rotational) speed. While the other two rotational speeds, roll and pith, are used to move the thrust vectors of the propellers and thus generate movement on the horizontal plane.}.
 
-For serial manipulators, a low-level actuator is usually employed to compensate the dynamic behavior of the system, making possible to control it with velocity commands as a first order system. For a full-dynamics quadrotor model accounting for aggressive maneuvers this is not at all the case, since it is a fourth order system. Thus, other strategies are usually considered to control such a robot (see \cite{Mellinger}). Already in the basic literature on Visual Servoing  \cite{chaumette_visual_2007} the authors suggest that kinematic control may not be enough for the case of aggressive maneuvers.  
+For serial manipulators, a low-level actuator is usually employed to compensate the dynamic behavior of the system, making possible to control it with velocity commands as a first order system. For a full-dynamics quadrotor model accounting for aggressive maneuvers this is not at all the case, since it is a fourth order system. Thus, other strategies are usually considered to control such a robot (see \cite{Mellinger} for a comprehensive description of the control of the dynamics of a quadrotor and its trajectory generation in space). Already in the basic literature on Visual Servoing (see \cite{chaumette_visual_2007}) the authors suggest that kinematic control may not be enough for the case of aggressive maneuvers. 
 
-When dealing whit the dynamics it is necessary to incorporate the measurement of linear and angular velocities. Dynamic control leads to a coupling of the camera ego-motion on the image plane.
+The main disadvantage of taking into account the full-dynamics of the system is the resultant highly coupled Jacobian matrix.
 
-To use spherical moments is not necessary to implement physically a spherical camera, just to compute numerically the spherical moments of the image.
+When dealing whit the dynamics it is necessary to incorporate the measurement of linear and angular velocities, usually coming from an IMU. Dynamic control leads to a coupling of the camera ego-motion on the image plane.
 
-Image moments are invariant to some transformations like scale, 2D translation or 2D rotation. This has been intensively used in pattern recognition. 
+% (TODO: To use spherical moments is not necessary to implement physically a spherical camera, just to compute numerically the spherical moments of the image.)
+
+Image moments are invariant to some transformations like scale, 2D translation or 2D rotation. This has been intensively used in pattern recognition.
+
+Introducing visual features based on image moments allows to design a decoupled control scheme when the object is parallel to the image plane (see \cite{tahri_2005}). Later, it is possible to generalize this property for the case of a non-parallel position with respect to the image plane.
+
+One of the major questions in Visual Servoing is the selection of an adequate set of visual features and combine them in a proper way. It can be just a set of image points, lines, circles or rather a more complex set of visual moments. A proper combination should lead to 
 
 % \cite{guenard_2008}
 
@@ -41,21 +55,25 @@ In the work \cite{guenard_2008}, am IBVS controller for the full dynamics of a q
 
 Common strategy is to use to different loops to separate the control problem. The inner attitude loop runs at high gain using IMU measurements, while the outer loop runs at low gain with the visual input of the camera taking care of translation. The visual servo controller (outer loop) provides the attitude control (inner loop) the desired targets and outer loop ensures the stability of the system. An advantage of this approach is the possibility of reuse the IBVS scheme in other platforms since the low-level control of the specific material equipment of the aerial robot is not involved in it.
 
-The paper \cite{bourquardez_2009} focuses in the design of kinematic controllers.
-
-The use of zero and first-order image moments as visual features is considered inappropriate for aggressive maneuvers due to its lack of robustness for this case. For this reason, first-order spherical moments are introduced. Different control schemes are proposed in the paper. First, one controller using perspective projections is able of regulating the translation of the system thanks to the decoupled relationship between image and task space obtained. For the case of the camera image plane being parallel to the target plane, it is possible to control the translation of the robot independently of its rotation in a way equivalent to PBVS but without any pose estimation involved. The target depth is introduced as an initial data, so no depth estimation is performed. The strategy is easy to implement and provides a good result within the assumed geometrical limitation.
+The paper \cite{bourquardez_2009} focuses in the design of kinematic controllers. The use of zero and first-order image moments as visual features is considered inappropriate for aggressive maneuvers due to its lack of robustness for this case. For this reason, first-order spherical moments are introduced. Different control schemes are proposed in the paper. First, one controller using perspective projections is able of regulating the translation of the system thanks to the decoupled relationship between image and task space obtained. For the case of the camera image plane being parallel to the target plane, it is possible to control the translation of the robot independently of its rotation in a way equivalent to PBVS but without any pose estimation involved. The target depth is introduced as an initial data, so no depth estimation is performed. The strategy is easy to implement and provides a good result within the assumed geometrical limitation.
 
 To overcome the limitations of the simple model presented, the work introduces order control schemes that include spherical projections as visual features and non-linear control techniques that improve the behavior for the case of aggressive maneuvers, although still around the hovering position.
  
  % \cite{ceren_image_2012}
- 
- In \cite{ceren_image_2012}, present a kinematic controller based on a Hybrid Visual Servoing scheme. The desired velocities are computed with the visual information , 
- 
+
+ In \cite{ceren_image_2012}, present two kinematic controllers, one based on points as visual features for IBVS and other implementing a Hybrid Visual Servoing scheme that requires partial pose estimation.
+  
+  % \cite{jabbari_dynamic_2012}
+  
+  \cite{jabbari_dynamic_2012} designs a controller for the dynamics of a quadrotor within the IBVS approach. A projection of the image moment features - augmented with inertial information to better control the dynamics - on a virtual plane dependent on the pitch and roll of the robot is presented. This method allows creating trajectories that are not only convenient in the image plane (i.e. where a usual IBVS controller is considered) but also in the Cartesian space. Finally a non-linear controller is derived for the system.
+  
+  
  % \cite{asl_vision-based_2015}
  
- The authors in \cite{asl_vision-based_2015}, propose two improvements. For most of the controllers in the literature the camera velocity is required. This comes usually from IMU estimations, but due to the usual lack of GPS of the robots the noisy measurements of the IMU may not be enough. The paper proposed a visual flow and non-linear observer strategy to overcome this inconvenience. Secondly, in the standard formulation of the Jacobian matrix a estimation of the visual feature depth is necessary, something which is expensive to include in the controller. This is usually solved tanks to the use of image moments and a predefined target depth. The authors include here a controller to deal with this uncertainty.
+ The authors in \cite{asl_vision-based_2015}, propose two improvements. For most of the controllers in the literature the camera velocity is required. This comes usually from IMU estimations, but due to the usual lack of GPS of the robots the noisy measurements of the IMU may not be enough. The paper proposed a visual flow and non-linear observer strategy to overcome this inconvenience. Secondly, in the standard formulation of the Jacobian matrix a estimation of the visual feature depth is necessary, something which is expensive to include in the controller. This is usually solved tanks to the use of image moments and a predefined target depth. The authors include here a controller to deal with this uncertainty. Furthermore, image features are projected in a virtual plane (dependent on the pitch and roll of the vehicle) 
  
    \nomenclature[ba]{GPS}{Global Positioning System}
+   
  
 \subsection{Visual Servoing for Aerial Manipulators}
 
@@ -71,7 +89,7 @@ To overcome the limitations of the simple model presented, the work introduces o
 
 % (TODO: Main reference to image moments [17, mebarki_exploiting_2013].)
 
-In this section a perspective of Visual Servoing applied to aerial manipulators is presented. The main available literature is analyzed and the common approaches followed in it highlighted.
+In this section a perspective of Visual Servoing applied to aerial manipulators is presented. The main available literature is analyzed and the common approaches followed in it highlighted. An the end of the section, Table \ref{vs-manipulators-table} summarizes the strategies commented attending with regard to the main characteristics of each method. 
 
 % Aerial gripping
 
@@ -147,8 +165,8 @@ In \cite{santamaria-navarro_uncalibrated_2017}, redundant manipulation and hiera
 		\cite{santamaria-navarro_uncalibrated_2017} & quadrotor  & 6 & eye-in-hand & Uncalibrated IBVS & blobs' barycenters & hierarchical task-composition algorithm \\
 		\bottomrule
 	\end{tabularx}
-	\caption{My caption}
-	\label{my-label}
+	\caption{Overview of the different approaches for VS in flying manipulators}
+	\label{vs-manipulators-table}
 \end{sidewaystable}
 
 
