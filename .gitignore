@@ -6,18 +6,23 @@ CONTRIBUTING.md
 
 docs/
 
+thesis_master.pdf
+
 *.aux
 *.bbl
 *.bcf
 *.blg
+*.cfg
 *.gz
+*.ilg
 *.lof
 *.log
 *.lol
 *.lot
 *.nlo
+*.nls
 *.out
-*.pdf
+*.run.xml
 *.toc
 *.xml
 

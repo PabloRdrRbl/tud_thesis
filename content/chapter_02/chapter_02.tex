@@ -5,11 +5,15 @@
 \label{chap:theory-state-art}
 %%%%%%%%%%
 
+
+
 \section{Visual Servoing Theoretical Basics}
 
-In this section the theoretical basic background of visual servo controllers is briefly discussed. It is usual in the literature to take \cite{chaumette_visual_2006} and \cite{chaumette_visual_2007} as the main reference when it comes to the theoretical setup of the discipline. As a result, the following description is completely based on these popular sources\footnote{The interested reader should visit the Lagadic research group home page (\url{http://www.irisa.fr/lagadic}), pioneers in the area.}.
+In this section the theoretical background of visual servo controllers is briefly discussed. The different parts of a Visual Servoing scheme are presented and the basic strategy is illustrated. It is usual in the literature to take \cite{chaumette_visual_2006} and \cite{chaumette_visual_2007} as the main reference when it comes to the theoretical setup of the discipline. As a result, the following description is based on these popular sources\footnote{The interested reader should visit the Lagadic research group home page (\url{http://www.irisa.fr/lagadic}), pioneers in the area.}.
 
 Visual Servoing is defined in the literature as the use of computer vision data to control the motion of a robot. The image data comes from a camera, which can observe the robot fixed in the space or moving with the robot. The latter approach is know as eye-in-hand Visual Servoing and is the selected one for the case of this work.
+
+\nomenclature[ba]{CV}{Computer Vision}
 
 Visual servo controllers accomplish their task of reaching a certain pose by trying to minimize the following error $\bm{e}(t)$
 
@@ -22,21 +26,21 @@ Here, $\bm{m}(t)$ is a set of image measurements (e.g. the image coordinates of 
 
 For the present case, where the target is not moving,  $\bm{s}^\ast$ and the changes in $\bm{s}$ depend only on the camera motion.
 
-There exist two main variants of Visual Servoing depending on how the features vector $\bm{s}$ is defined. On the one hand, Image Based Visual Servoing (IBVS) takes as $\bm{s}$ a set of features already available within the image data (TODO it can be seen as a control of the features in the image plan such that moving the features to a goal configuration implicitly results in the task being accomplished \cite{espiau_1992}). On the other hand, Position Based Visual Servoing (PBVS) considers for $\bm{s}$ a set of 3D parameters that must be estimated from the image data (TODO: Add that it is a cartesian motion planing problem).
+There exist two main variants of Visual Servoing depending on how the features vector $\bm{s}$ is defined. On the one hand, Image Based Visual Servoing (IBVS) takes as $\bm{s}$ a set of features already available within the image data. It can be seen as a control of the features in the image plan such that moving the features to a goal configuration implicitly results in the task being accomplished (see \cite{espiau_1992}). On the other hand, Position Based Visual Servoing (PBVS) considers for $\bm{s}$ a set of 3D parameters that must be estimated from the image data. Once the parameters are available, pose estimation is conducted and the Visual Servoing task results in a cartesian motion planing problem.
 
 \nomenclature[ba]{IBVS}{Image Based Visual Servoing}
 \nomenclature[ba]{PBVS}{Position Based Visual Servoing}
 
-Using the PBVS approach leads to the necessity of camera calibration and estimation of the flying robot pose (TODO: Add reference or a bit more of information), these are two big disadvantages for the application intended in this work. On the other side, IBVS needs no camera calibration and allows the robot to achieve the pose desired without any pose estimation process.
+Using the PBVS approach leads to the necessity of camera calibration and estimation of the flying robot pose, these are two big disadvantages for the application intended in this work. On the other side, IBVS needs no camera calibration and allows the robot to achieve the pose desired without any pose estimation process. Resulting in a convenient method for cheap systems.
 
-A simple velocity controller can be arranged in the following way. Let $\bm{v}_c = (v_c, \bm{\omega}_c)$ be the spatial velocity of the camera, with $v_c$ the instantaneous linear velocity of the origin of the camera frame and $\bm{\omega}_c$ the instantaneous angular velocity of the camera frame, as a result we can express the temporal variation of the features vector as
+A simple velocity controller can be arranged in the following way. Let $\bm{v}_c = (v_c, \bm{\omega}_c)$ be the spatial velocity of the camera, with $v_c$ the instantaneous linear velocity of the origin of the camera frame and $\bm{\omega}_c$ the instantaneous angular velocity of the camera frame, as a result the temporal variation of the features can be expressed as
 
 \begin{equation}
 \dot{\bm{s}} = \bm{L_s} \bm{v}_c
 \label{eq:vs-th-2}
 \end{equation}
 
-Where $\bm{L_s} \in \mathbb{R}^{k \times 6}$, the feature Jacobian, acts as iteration matrix relating the camera velocity and the change in the visual features.
+Where $\bm{L_s} \in \mathbb{R}^{k \times 6}$, the feature Jacobian, acts as interaction matrix relating the camera velocity and the change in the visual features.
 
 The time variation of the error to be minimized can be obtained by combining \ref{eq:vs-th-1} and \ref{eq:vs-th-2}
 
@@ -45,7 +49,7 @@ The time variation of the error to be minimized can be obtained by combining \re
 \label{eq:vs-th-3}
 \end{equation}
 
-with $\bm{L_e} = \bm{L_s}$. The input for such a controller is the camera velocity  $\bm{v}_c$, which, using \ref{eq:vs-th-3}, we can set in such a way that an exponential decrease of the error is imposed (i.e. $\dot{\bm{e}} = - \lambda \bm{e}$) 
+with $\bm{L_e} = \bm{L_s}$. The input for such a controller is the camera velocity  $\bm{v}_c$, which, using \ref{eq:vs-th-3}, can be set in such a way that an exponential decrease of the error is imposed (i.e. $\dot{\bm{e}} = - \lambda \bm{e}$) 
 
 \begin{equation}
 \bm{v}_c = - \lambda \bm{L_e}^+ \bm{e}
@@ -63,9 +67,13 @@ When implementing real systems it is not possible to know perfectly either $\bm{
 
 Once the basic appearance of a visual servo controller has being presented, the goal is to ask the following questions: How should $\bm{s}$ be chosen?  What is the form of $\bm{L_s}$? How should we estimate $\widehat{\bm{L_e}^+}$?
 
-In the simplest approach, the vector $\bm{s}$ is selected as a set of image-plane points, where $\bm{m}$ are the set of coordinates of these  image points and $\bm{a}$ the camera intrinsic parameters. Later in this work, a more complex definition for the image features vector $\bm{s}$ will be chosen.
+In the simplest approach, the vector $\bm{s}$ is selected as a set of image-plane points, where $\bm{m}$ are the set of coordinates of these  image points and $\bm{a}$ the camera intrinsic parameters. Later in this work, a more complex definition for the image features vector $\bm{s}$ will be used.
+
+Concerning the interaction matrix $\bm{L_s}$ 
 
 \subsection*{The Interaction Matrix}
+
+The interaction matrix, which relates the camera velocity to the change of the visual features, is strictly related to the the camera model. A camera model describes the correspondence between objects in 3D space and their appearance in a 2D image. Here, the pinhole camera model is used.
 
 The camera image capture is a procedure which projects a 3D point from its coordinates in the camera frame, $\bm{X} = (X, Y, Z)$, to a 2D image point with coordinates $\bm{x} = (x, y)$. From this geometry we have
 
@@ -77,9 +85,16 @@ y = Y/Z = (v - c_v) / f
 \label{eq:vs-th-6}
 \end{equation}
 
-where $\bm{m} = (u, v)$ gives the coordinates of the image point in pixel units, and $\bm{a} = (c_u, c_v, f, \alpha)$ is the set of camera intrinsic parameters: $c_u$ and $c_v$ are the coordinates of the principal point, $f$ is the focal length, and $\alpha$ is the ratio of the pixel dimensions. In this case, we take as feature the image point, thus $\bm{s} = \bm{x} = (x, y)$.
+where $\bm{m} = (u, v)$ gives the coordinates of the image point in pixel units, and $\bm{a} = (c_u, c_v, f, \alpha)$ is the set of camera intrinsic parameters: $c_u$ and $c_v$ are the coordinates of the principal point, $f$ is the focal length, and $\alpha$ is the ratio of the pixel dimensions. For a feature point: $\bm{s} = \bm{x} = (x, y)$.
 
-Taking the time derivative of the projection equations \ref{eq:vs-th-6}, we obtain
+\begin{figure}[ht]
+	\centering
+	\includegraphics[keepaspectratio, width=9cm]{content/chapter_02/images/pinhole_camera.png}
+	\caption{Pinhole camera model}
+	\label{fig:poster-logo-block}
+\end{figure}
+
+Taking the time derivative of the projection Equation \ref{eq:vs-th-6}, we obtain
 
 \begin{equation}
 \begin{cases}
@@ -101,7 +116,7 @@ The velocity of the 3D point can be related to the spatial velocity of the camer
 \label{eq:vs-th-8}
 \end{equation}
 
-Introducing \ref{eq:vs-th-8} in \ref{eq:vs-th-7}, and grouping terms we can write
+Introducing \ref{eq:vs-th-8} in \ref{eq:vs-th-7} and grouping terms, it can be written
 
 \begin{equation}
 \begin{cases}
