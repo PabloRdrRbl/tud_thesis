@@ -12,12 +12,15 @@ thesis_master.pdf
 *.bbl
 *.bcf
 *.blg
+*.cfg
 *.gz
+*.ilg
 *.lof
 *.log
 *.lol
 *.lot
 *.nlo
+*.nls
 *.out
 *.run.xml
 *.toc
