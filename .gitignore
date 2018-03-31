@@ -18,6 +18,7 @@ docs/
 *.nlo
 *.out
 *.pdf
+*.run.xml
 *.toc
 *.xml
 
