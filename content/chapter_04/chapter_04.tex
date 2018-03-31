@@ -5,3 +5,44 @@
 \label{chap:algorithm-drescription}
 %%%%%%%%%%
 
+\section{IBVS Using Perspective Projections}
+
+In this section, an IBVS scheme for the control of the translation and kinematics of an aerial vehicle is presented (see \cite{bourquardez_2009}). The implementation details of this algorithm are given in Section \ref{sec:implementation-perspective}. 
+
+Given an object, the visual feature vector $\bm{s} = (x_n, y_n, a_n)$ is defined such that
+
+\begin{equation*}
+a_n = Z^\ast \sqrt{\frac{a^\ast}{a}} \\
+x_n = a_n x_g \\
+ y_n = a_n y_g 
+\end{equation*}
+
+Where $a$ is the area of the object in the image, $x_g$ and $y_g$ its centroid coordinates, $a^\ast$ the desired area, and $Z^\ast$ the desired depth between the camera and the target. The relationship between the relative motion of the camera and the object and the feature kinematics is given by
+
+\begin{equation}
+\dot{\bm{s}} = \bm{L_v} \bm{v} + \bm{L_\omega} \bm{\omega}
+\end{equation}
+
+Here, the linear and angular velocities of the camera (expressed in the camera frame) are $\bm{v}$ and $\bm{\omega}$. The iteration matrix is separated in two matrices, $\bm{L_v}$ related to translation and $\bm{L_\omega}$ related to rotation. The desired image feature is denoted by $\bm{s}^\ast$, and the visual error is defined by $\bm{e} = \bm{s} - \bm{s}^\ast$.
+
+As already mentioned in Section \ref{sec:vs-theory}, linear exponential stability is imposed on the error kinematics to ensure an exponential decoupled decrease for $\bm{e}$ ($\dot{\bm{e}} = - \lambda \bm{e}$, with $\lambda$ a positive gain). Now $\bm{e}$ can be used to control the translational \footnote{Remember that for the case of a quadrotor, it is an underactuated system. Thus, it is only possible to control its translation and yaw.} degrees of freedom using the following control input
+
+\begin{equation}
+\bm{v} = - (\bm{L_v})^{-1} (\lambda \bm{e} + \bm{L_\omega} \bm{\omega}) \text{ with } \lambda > 0
+\end{equation}
+
+Generally, the interaction terms $\bm{L_v}$ and $\bm{L_\omega}$ depend nonlinearly on the state of the system and cannot be reconstructed exactly from the observed visual data. To cope with this situation the system can be linearized around an equilibrium position.
+
+For an aerial robot where the camera is pointing downwards towards the target object, it is possible to approximate $\bm{L_v} \approx - \bm{I}_3$, since the camera image plane is parallel to the target plane. Furthermore, the motion of the robot is smooth and slow, so the value of $\bm{L_\omega} \bm{\omega}$ is small compared with the error $\lambda \bm{e}$. As a result, the following approximation is valid
+
+\begin{equation}
+\bm{v} = \lambda \bm{e} \text{ with } \lambda > 0
+\end{equation}
+
+In order to control the yaw motion of the system, it is possible to compute the rotation $\theta_z$ around $z$ with respect to the target. Yaw control is achieved through the following law
+
+\begin{equation}
+\bm{\omega_z} = \lambda \theta_z \text{ with } \lambda > 0
+\end{equation}
+
+The method presented int his section has some limitations, since it depends on the geometry of the target and considers only smooth and slow trajectories. Any aggressive maneuver, or a case in which the parallel target assumption is invalidated, makes the approximations taken fail. 
