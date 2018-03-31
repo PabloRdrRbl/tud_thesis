@@ -211,7 +211,7 @@
   \RequirePackage[           % Verwendung von biblatex für das Literaturverzeichnis
     style=\@ifaBibliographyStyle, 
     backend=\@ifaBibliographyBackend, 
-    maxbibnames=99,
+    maxbibnames=1,
     backref=true,
     natbib=true
   ]{biblatex}

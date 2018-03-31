@@ -10,12 +10,15 @@ docs/
 *.bbl
 *.bcf
 *.blg
+*.gz
 *.lof
 *.log
 *.lol
 *.lot
 *.nlo
 *.out
+*.pdf
 *.run.xml
-*.gz
 *.toc
+*.xml
+

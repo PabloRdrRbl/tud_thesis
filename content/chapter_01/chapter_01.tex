@@ -1,4 +1,4 @@
-%!TEX root = ../thesis_main.tex
+%!TEX root = ../../thesis_master.tex
 
 %%%%%%%%%%
 \chapter{Introduction}
@@ -10,7 +10,7 @@
 \label{sec:motivation-brackground}
 %%%%%%%%%%
 
-During the last decade, the use of Unmanned Aerial Vehicles (UAVs) has spread among very different applications. The use of flying robots can be very helpful to improve the way some tasks are already achieved by terrestrial robots. For example, object transportation, environment mapping or surveillance. At the Institute of Automation Engineering\footnote{Technische Universität Dresden. Institut für Automatisierungstechnik. 01062 Dresden, Germany} of the Technical University of Dresden, a drone is being developed in cooperation with the Institute of Solid Mechanics\footnote{Technische Universität Dresden. Institut für Festkörpermechanik. 01062 Dresden, Germany} to investigate the use of flying robots in aerial manipulation.
+During the last decade, the use of Unmanned Aerial Vehicles (UAVs) has spread among very different applications. Flying robots can be very helpful to improve the way some tasks are already achieved by terrestrial platforms. For example, object transportation, environment mapping or surveillance. At the Institute of Automation Engineering\footnote{Technische Universität Dresden. Institut für Automatisierungstechnik. 01062 Dresden, Germany} of the Technical University of Dresden, a drone is being developed in cooperation with the Institute of Solid Mechanics\footnote{Technische Universität Dresden. Institut für Festkörpermechanik. 01062 Dresden, Germany} to investigate the use of flying robots in aerial manipulation.
 
 \nomenclature[ba]{UAV}{Unmanned Aerial Vehicle}
 \nomenclature[ba]{TUD}{Technische Universität Dresden}
@@ -23,7 +23,11 @@ A monocular monochrome camera as well as an Inertial Measurement Unit (IMU) are 
 
 \nomenclature[ba]{IMU}{Inertial Measurement Unit}
 
-In order to integrate the visual servoing algorithm into the future modular robot system, the algorithm has been designed and tested on a underactuated conventional quadrotor. The aerial robot is implemented within the ROS\footnote{\url{www.ros.org}} framework, where the visual servoing controller developed for this thesis is also integrated. Instead of using real hardware the complete system is simulated using Gazebo\footnote{\url{ www.gazebosim.org}}.
+Vision results to be a passive (in contrast to GPS) and cheap sensor (in contrast to LIDAR system). Visual odometry is very helpful to navigate in GPS denied environments like indoors, but its not appropriated to regulate the relative navigation of the vehicle with respect to a target.  
+
+\nomenclature[ba]{LIDAR}{Light Detection and Ranging}
+
+In order to integrate the visual servoing algorithm into the future modular robot system, the algorithm has been designed and tested on a under-actuated conventional quadrotor. The aerial robot is implemented within the ROS\footnote{\url{www.ros.org}} framework, where the visual servoing controller developed for this thesis is also integrated. Instead of using real hardware the complete system is simulated using Gazebo\footnote{\url{ www.gazebosim.org}}.
 
 \nomenclature[ba]{ROS}{Robot Operative System}
 
@@ -34,6 +38,6 @@ In order to integrate the visual servoing algorithm into the future modular robo
 
 The aim of this work is to implement and test a VS control algorithm for a quadrotor, which could be later used by the Flypulator (TODO: Add reference) project. This includes the review of the state of the art with regard to Visual Servoing, the design of a solution and a prototypical implementation with in the ROS framework and simulation with Gazebo of a test case.
 
-The present thesis documents comprehensively the theoretical background, implementation details and results of the conducted work through the following structure. In Chapter \ref{chap:theory-state-art} the theoretical background and state of the art of Visual Servoing is presented. Chapter \ref{chap:srs-sa} gives a description of the system requirements as well as the system decomposition by Structure Analysis (SA) \cite{SA_Braune}. Chapter \ref{chap:algorithm-drescription} describes the solution developed and the algorithms to be tested. Chapter \ref{chap:implementation} deals with the implementation, testing and validation. Finally, Chapter \ref{chap:results-conclusions} contains the final results and conclusions and Chapter \ref{chap:future-work} suggests future improvement and research paths.
+The present thesis documents comprehensively the theoretical background, implementation details and results of the conducted work through the following structure. In Chapter \ref{chap:theory-state-art} the theoretical background and state of the art of Visual Servoing is presented. Chapter \ref{chap:srs-sa} gives a description of the system requirements as well as the system decomposition by Structure Analysis (SA) (see \cite{SA_Braune}). Chapter \ref{chap:algorithm-drescription} describes the solution developed and the algorithms to be tested. Chapter \ref{chap:implementation} deals with the implementation, testing and validation. Finally, Chapter \ref{chap:results-conclusions} contains the final results and conclusions and Chapter \ref{chap:future-work} suggests future improvement and research paths.
 
 \nomenclature[ba]{ROS}{Structure Analysis}
