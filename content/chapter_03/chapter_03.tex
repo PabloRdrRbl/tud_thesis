@@ -5,20 +5,27 @@
 \label{chap:srs-sa}
 %%%%%%%%%%
 
-This chapter deals with the Software Requirement Specification (SRS) (described in \cite{IEEE8301998}) and the Structured Analysis (see \cite{SA_Braune}) of the system developed in this work. Thanks to these two procedures, the objectives that the system must fulfill and a decomposition of it into different functions are stated. This leads to a complete definition of the system.
+This chapter deals with the Software Requirement Specification (SRS) \cite{IEEE8301998} and the Structured Analysis \cite{SA_Braune} of the system developed in this work. Thanks to these two procedures, the objectives that the system must fulfill and a decomposition of it into different functions are stated. This leads to a complete definition of the system.
 
 \nomenclature[ba]{SRS}{Software Requirement Specification}
 
 The purpose of this work is to design a Visual Servoing controller to provide an under-actuated aerial robot the commands necessary to reach a desired pose with respect to a target object.
 
-The VS controller developed is to be integrated into the hector\_quadrotor\footnote{\url{http://wiki.ros.org/hector_quadrotor}} (see \cite{2012simpar_meyer}), an under-actuated aerial robot equipped with a monocular monochrome camera pointing downwards.
+% TODO: Previously:
+
+%The visual servo controller developed is to be integrated into the hector\_quadrotor\footnote{\url{http://wiki.ros.org/hector_quadrotor}} (see \cite{2012simpar_meyer}), an under-actuated aerial robot equipped with a monocular monochrome camera pointing downwards.
+
+The visual servo controller developed is to be integrated into the HORUS aerial manipulator, a fully-actuated aerial robot equipped with a monocular monochrome camera pointing downwards.
+
+% TODO: Reference for HORUS
+
 
 %%%%%%%%%%
 \section{Software Requirements Specification}
 \label{sec:srs}
 %%%%%%%%%%
 
-In this section the Software Requirement Specification ( described in \cite{IEEE8301998}) for the Visual Servoing controller developed in this thesis is presented. Using SRS helps to define the system that is being designed, tracking continuously that the product developed satisfies the needs of the user. Only when every requirement stated therein is fulfilled the implementation would be completed.
+In this section, the Software Requirement Specification \cite{IEEE8301998} for the visual servo controller developed in this thesis is presented. The use of SRS helps to define the system that is being designed, tracking continuously that the product developed satisfies the needs of the user. Only when every requirement stated therein is fulfilled the implementation would be completed.
 
 %%%%%%%%%%
 \subsection{Product Perspective}
@@ -27,23 +34,39 @@ In this section the Software Requirement Specification ( described in \cite{IEEE
 
 The VS controller is to be used with an aerial robotic system based on the ROS framework. From the perspective of the robotic system, the VS controller subsystem will appear as a ROS node which publishes control commands through a ROS topic to the rest of the system.
 
-The used aerial robotic system is the hector\_quadrotor\footnote{\url{http://wiki.ros.org/hector_quadrotor}} model (see \cite{2012simpar_meyer}). (TODO: Add diagram).
+% TODO: Previously:
 
-The subsystem developed here is to interact with the camera hardware of the robot, a monocular monochrome camera pointing downwards (TODO: Add hardware). The output of the subsystem are the control inputs of the aerial robot system, a kinematic control is adopted, being this inputs the linear velocities of the vehicle and its yaw angular velocity. These inputs interact with the inner control loop for the attitude already implemented in the robotic system and are the main input for the outer control loop, the one in charge of the translation.
+%The aerial robotic system used is the hector\_quadrotor\footnote{\url{http://wiki.ros.org/hector_quadrotor}} model (see \cite{2012simpar_meyer}). (TODO: Add diagram).
+
+The aerial robotic system used is the HORUS aerial manipulator developed at the Institute of Automation Engineering of the TUD.
+
+% TODO: Reference for HORUS.
+
+% TODO: Previously: "The output of the subsystem are the control inputs of the aerial robot system, a kinematic control is adopted, being this inputs the linear velocities of the vehicle and its yaw angular velocity."
+
+The subsystem developed here is to interact with the camera hardware of the robot, a monocular monochrome camera pointing downwards. The output of the subsystem are the control inputs of the aerial robot system, a kinematic control is adopted, being this inputs the linear and angular velocities of the vehicle. These inputs interact with the already implemented inner control loop for the attitude in the robotic system and are the main input for the outer control loop, the one in charge of the translation.
+
+% TODO: Add table with the hardware.
+
+% TODO: State more accurately the how the inner and outer control loops interact with the attitude and position control.
+
+% TODO : Sketch with the different control loops.
+
+With the help of the visual servo controller, the robot is able to achieve a desired pose with respect to a target using only the visual information provided by the camera and with no pose computation involved.
 
 %%%%%%%%%%
 \subsection{User Characteristics}
 \label{sec:user-characteristics}
 %%%%%%%%%%
 
-The product developed in this thesis will be used as part of a ROS-based system, thus the expected user is a designer willing to implement a VS control strategy for his robotic system. The user should be familiarized with the ROS framework and the system will need the structure and interfaces of any standard ROS product.
+The product developed in this thesis will be used as part of a ROS-based system, thus the expected user is a designer willing to implement an Image Based Visual Servoing control strategy for his robotic system. The user should be familiarized with the ROS framework and the system will need the structure and interfaces of any standard ROS product.
 
 %%%%%%%%%%
 \subsection{Assumptions and Dependencies}
 \label{sec:assumptions-dependencies}
 %%%%%%%%%%
 
-The software  has been tested on the following platforms, forward or backward support is not guaranteed on a different set-up.
+The software  has been tested on the following platform. Forward or backward support is not guaranteed on a different set-up.
 
 \begin{itemize}
 	\item ROS version: ROS Indigo\footnote{\url{http://wiki.ros.org/indigo}}
@@ -58,8 +81,16 @@ The software  has been tested on the following platforms, forward or backward su
 The functional requirements describe what the system must do to complete the overall task:
 
 \begin{itemize}
-	\item F1: \emph{Give visual servoing control input}. Control input based on image data so that the aerial robot comes closer to the target pose. Control as a difference on the image features, no pose estimation.
-	\item F2: \emph{Tell user when the target pose is achieved}. The system must be able of telling the user whether the target pose has been already achieved or not.
+	\item F1: \emph{Compute desired visual features}. For the desired pose with respect to the target, compute a vector of image features from the target. 
+	
+	\item F2: \emph{Compute current visual features}. For the current pose, compute a vector of image features from the target. 
+	
+	\item F3: \emph{Compute feature error}. Compute the difference between the desired current feature vector and the desired feature vector to be used as error for the control law.		
+	
+	\item F3: \emph{Give visual servoing control input}. Control input based on image data so that the aerial robot achieves the desired pose with respect to the target. Control based on the error between current and desired image features, no pose estimation.
+	
+	\item F5: \emph{Tell user when the target pose is achieved}. The system must be able of telling the user whether the target pose has been already achieved or not.
+	
 \end{itemize}
 
 %%%%%%%%%%
@@ -74,7 +105,7 @@ The functional requirements describe what the system must do to complete the ove
 	\item A4: Control inputs must provide stable and smooth flight maneuvers.
 	\item A5: Robot must be able to start from different initial positions.
 	\item A6: Algorithm must be fast enough to allow real time control of the aerial robot.
-	\item A7: The implementation should follow the style guide of ROS (see \cite{ROS_Style})
+	\item A7: The implementation should follow the style guide of ROS \cite{ROS_Style}.
 \end{itemize}
 
 %%%%%%%%%%
@@ -97,24 +128,165 @@ The functional requirements describe what the system must do to complete the ove
 \label{sec:sa}
 %%%%%%%%%%
 
+The Structured Analysis \cite{Janschek2011} is a formal method to describe relationships of functional type in complex processes. In order to do that, it views the system from the perspective of data flowing through it. The Structured Analysis is a top-down model, meaning that it analyses the system data flows through successive decomposition. The result of the Structured Analysis of a system is a set graphical diagrams representing the different processes or functions applied to the data and the outputs stored by the system.
+
+% TODO: Continue with next paragraph:
+
+% In this work, the system has been divided in ... levels ...
+
+%%%%%%%%%%
+\subsection{Context Diagram}
+\label{sec:context-diagram}
+%%%%%%%%%%
+
+The context diagram shows the interfaces between the system developed in this work and its environment.
+
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\textwidth]{content/chapter_03/images/sa_diagram_01.pdf}
-	\caption{Context diagram}
+	\includegraphics[width=0.8\textwidth]{content/chapter_03/images/sa_diagram_01.pdf}
+	\caption{Context Diagram}
 	\label{fig:sa_diag_01}
 \end{figure}
 
-\begin{figure}[h]
+\pagebreak
+
+%%%%%%%%%%
+\subsection{Level A: IBVS Controller}
+\label{sec:level-A}
+%%%%%%%%%%
+
+Level A is the first level below the context diagram and contains the main functions (defined in Section \ref{sec:functional-requirements} as F1, F2, F3, F4 and F5) of the system developed, the \textit{IBVS Controller}. In Figure \ref{fig:sa_diag_02} a Data Flow Diagram (DFD) is used to describe the interaction between data and processes. A Data Flow Diagram \cite{Janschek2011} is a decomposition of the system developed resultant of the subjective perspective of the design engineer about it.
+
+\nomenclature[ba]{DFD}{Data Flow Diagram}
+\nomenclature[ba]{DD}{Data Dictionary}
+
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\textwidth]{content/chapter_03/images/sa_diagram_02.pdf}
-	\caption{Data flow diagram - Level A}
-	\label{fig:sa_diag_01}
+	\caption{Data Flow Diagram - Level A}
+	\label{fig:sa_diag_02}
 \end{figure}
 
-\begin{figure}[h]
+\pagebreak
+
+Table \ref{tab:DD-LA} contains the Data Dictionary for the DFD of Level A. The Data Dictionary \cite{Janschek2011} is a detailed representation of all data flows involved in a Data Flow Diagram. Where $D = \text{data flow}$ and $C = \text{control flow}$.
+
+\begin{table*}[!htb]
 	\centering
-	\includegraphics[width=0.7\textwidth]{content/chapter_03/images/sa_diagram_03.pdf}
-	\caption{Data flow diagram - Level B1}
-	\label{fig:sa_diag_01}
+	\begin{tabular}{lll}
+		\toprule
+		Flow & Type & Description \\
+		\midrule
+		D0.1 & C & User input to start or stop the system \\
+		D0.2 & D & User defined desired pose w.r.t. the target \\
+		D0.3 & D & Camera image data \\
+		D0.4 & D & Camera information (sensor data, camera model, etc.) \\
+		D0.5 & D & Velocity inputs for the robot \\
+		D0.6 & C & Information about pose achieved or not \\
+		D0.7 & D & System status presented to the user \\
+		\midrule
+		DA.1 & D & Feature vector for desired pose \\
+		DA.2 & D & Current feature vector from camera image data \\
+		DA.3 & D & Features error used for control law \\
+		DA.4 & D & System status from process F1 \\
+		DA.5 & D & System status from process F2 \\
+		DA.6 & D & System status from process F3 \\
+		\midrule
+		S1 & Datastore & Desired feature vector \\
+		S2 & Datastore & Current feature vector \\
+		S3 & Datastore & Features error vector \\
+		\bottomrule
+	\end{tabular}
+\caption{Data Dictionary for Level A}
+\label{tab:DD-LA}
+\end{table*}
+
+\pagebreak
+
+%%%%%%%%%%
+\subsection{Level B1: Compute Desired Visual Features}
+\label{sec:level-B1}
+%%%%%%%%%%
+
+% TODO: In case of design alternative, this level may change. Desing variants are named with letters.
+
+The following Data Flow Diagram describes the inner work of the process \textit{F1: Compute desired visual features}.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.9\textwidth]{content/chapter_03/images/sa_diagram_03.pdf}
+	\caption{Data Flow Diagram - Level B1}
+	\label{fig:sa_diag_03}
 \end{figure}
 
+\pagebreak
+
+%%%%%%%%%%
+\subsection{Level B2: Compute Current Visual Features}
+\label{sec:level-B2}
+%%%%%%%%%%
+
+The following Data Flow Diagram describes the inner work of the process \textit{F2: Compute current visual features}.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.9\textwidth]{content/chapter_03/images/sa_diagram_04.pdf}
+	\caption{Data Flow Diagram - Level B2}
+	\label{fig:sa_diag_04}
+\end{figure}
+
+\pagebreak
+
+%%%%%%%%%%
+\subsection{Level B4: Compute Control Law}
+\label{sec:level-B3}
+%%%%%%%%%%
+
+The following data flow describes the inner work of the process \textit{F4: Compute control law}.
+
+\begin{table*}[!htb]
+	\centering
+	\begin{tabular}{lll}
+		\toprule
+		Flow & Type & Description \\
+		\midrule
+		DB1.1 & D & Vector containing the desired centroid coordinates for each blob\\
+		DB1.2 & D & Desired polygon formed by the blobs \\
+		DB1.3 & D & Desired polygon area \\
+		DB1.4 & D & Desired polygon centroid coordinates\\
+		DB1.5 & D & Desired polygon orientation angle \\
+		DB1.6 & D & System status from process F1.1 \\
+		DB1.7 & D & System status from process F1.2 \\
+		DB1.8 & D & System status from process F1.3 \\
+		DB1.9 & D & System status from process F1.4 \\
+		DB1.10 & D & System status from process F1.5 \\
+		DB1.11 & D & System status from process F1.6 \\
+		\midrule
+		DB2.1 & D & Vector containing the data from each of the detected blobs \\
+		DB2.2 & D & Current polygon \\
+		DB2.3 & D & Current area of the polygon \\
+		DB3.4 & D & Current polygon centroid coordinates \\
+		DB2.5 & D & Current polygon orientation angle \\
+		DB2.6 & D & System status from process F1.1 \\
+		DB2.7 & D & System status from process F1.2 \\
+		DB2.8 & D & System status from process F1.3 \\
+		DB2.9 & D & System status from process F1.4 \\
+		DB2.10 & D & System status from process F1.5 \\
+		DB2.11 & D & System status from process F1.6 \\
+		\midrule
+		S1.1 & Datastore & Fixed frame to desired pose homogeneous transformation \\
+		S1.2 & Datastore & Desired centroid coordinates for each blob \\
+		S1.3 & Datastore & Desired target polygon \\
+		S1.4 & Datastore & Desired polygon area \\
+		S1.5 & Datastore & Desired polygon centroid coordinates \\
+		S1.6 & Datastore & Desired polygon orientation angle \\
+		S2.1 & Datastore & Blob edges, gray level and centroid coordinates \\
+		S2.2 & Datastore & Current target polygon  \\
+		S2.3 & Datastore & Current polygon area \\
+		S2.4 & Datastore & Current polygon centroid coordinates \\
+		S2.5 & Datastore & Current polygon orientation angle \\		
+		\bottomrule
+	\end{tabular}
+	\caption{Data Dictionary for Level B}
+	\label{tab:DD-LB}
+\end{table*}
