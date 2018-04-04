@@ -214,7 +214,7 @@ The following Data Flow Diagram describes the inner work of the process \textit{
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=\textwidth]{content/chapter_03/images/sa_diagram_03.pdf}
+	\includegraphics[width=0.9\textwidth]{content/chapter_03/images/sa_diagram_03.pdf}
 	\caption{Data Flow Diagram - Level B1}
 	\label{fig:sa_diag_03}
 \end{figure}
@@ -250,9 +250,9 @@ The following data flow describes the inner work of the process \textit{F4: Comp
 		\toprule
 		Flow & Type & Description \\
 		\midrule
-		DB1.1 & D & Desired centroid coordinates for each blob\\
+		DB1.1 & D & Vector containing the desired centroid coordinates for each blob\\
 		DB1.2 & D & Desired polygon formed by the blobs \\
-		DB1.3 & D & Desired polygon area\\
+		DB1.3 & D & Desired polygon area \\
 		DB1.4 & D & Desired polygon centroid coordinates\\
 		DB1.5 & D & Desired polygon orientation angle \\
 		DB1.6 & D & System status from process F1.1 \\
@@ -263,29 +263,28 @@ The following data flow describes the inner work of the process \textit{F4: Comp
 		DB1.11 & D & System status from process F1.6 \\
 		\midrule
 		DB2.1 & D & Vector containing the data from each of the detected blobs \\
-		DB2.2 & D & Vector containing the centroid coordinates for each blob \\
-		DB2.3 & D & Vector containing the area of each blob \\
-		DB2.4 & D & Vector containing the orientation of the target \\
-		DB2.5 & D & System status from process F1.1 \\
-		DB2.6 & D & System status from process F1.2 \\
-		DB2.7 & D & System status from process F1.3 \\
-		DB2.8 & D & System status from process F1.4 \\
-		DB2.9 & D & System status from process F1.5 \\
+		DB2.2 & D & Current polygon \\
+		DB2.3 & D & Current area of the polygon \\
+		DB3.4 & D & Current polygon centroid coordinates \\
+		DB2.5 & D & Current polygon orientation angle \\
+		DB2.6 & D & System status from process F1.1 \\
+		DB2.7 & D & System status from process F1.2 \\
+		DB2.8 & D & System status from process F1.3 \\
+		DB2.9 & D & System status from process F1.4 \\
+		DB2.10 & D & System status from process F1.5 \\
+		DB2.11 & D & System status from process F1.6 \\
 		\midrule
 		S1.1 & Datastore & Fixed frame to desired pose homogeneous transformation \\
 		S1.2 & Datastore & Desired centroid coordinates for each blob \\
 		S1.3 & Datastore & Desired target polygon \\
 		S1.4 & Datastore & Desired polygon area \\
 		S1.5 & Datastore & Desired polygon centroid coordinates \\
-		S1.6 & Datastore & Desired polygon orientation area \\
-		S2.1 & Datastore & Blob edges and gray level \\
-		S2.2 & Datastore & Blob centroid coordinates \\
-		S2.3 & Datastore & Blob area \\
-		S2.4 & Datastore & Target centroid coordinates \\
-		S2.5 & Datastore & Target area \\
-		S2.6 & Datastore & Target orientation angle \\
-	
-		
+		S1.6 & Datastore & Desired polygon orientation angle \\
+		S2.1 & Datastore & Blob edges, gray level and centroid coordinates \\
+		S2.2 & Datastore & Current target polygon  \\
+		S2.3 & Datastore & Current polygon area \\
+		S2.4 & Datastore & Current polygon centroid coordinates \\
+		S2.5 & Datastore & Current polygon orientation angle \\		
 		\bottomrule
 	\end{tabular}
 	\caption{Data Dictionary for Level B}
