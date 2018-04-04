@@ -6,6 +6,10 @@ CONTRIBUTING.md
 
 docs/
 
+
+*.cfg
+*.ilg
+*.nls
 *.aux
 *.bbl
 *.bcf
