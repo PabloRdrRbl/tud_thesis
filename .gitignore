@@ -6,20 +6,19 @@ CONTRIBUTING.md
 
 docs/
 
-
-*.cfg
-*.ilg
-*.nls
 *.aux
 *.bbl
 *.bcf
 *.blg
+*.cfg
 *.gz
+*.ilg
 *.lof
 *.log
 *.lol
 *.lot
 *.nlo
+*.nls
 *.out
 *.run.xml
 *.toc
