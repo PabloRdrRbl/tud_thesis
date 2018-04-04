@@ -21,7 +21,6 @@ docs/
 *.lot
 *.nlo
 *.out
-*.pdf
 *.run.xml
 *.toc
 *.xml
