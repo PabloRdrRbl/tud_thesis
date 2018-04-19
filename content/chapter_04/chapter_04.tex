@@ -5,11 +5,11 @@
 \label{chap:algorithm-drescription}
 %%%%%%%%%%
 
-\section{IBVS Using Perspective Projections}
+\section{IBVS Kinematic Control Using Perspective Projections}
 
-In this section, an IBVS scheme for the control of the translation and kinematics of an aerial vehicle is presented (see \cite{bourquardez_2009}). The implementation details of this algorithm are given in Section \ref{sec:implementation-perspective}. 
+In this section, an IBVS scheme for the control of the translation and yaw rotation kinematics \cite{bourquardez_2009} of an aerial robot is presented. The implementation details of this algorithm as a ROS system are given in Section \ref{sec:implementation-perspective}. 
 
-Given an object, the visual feature vector $\bm{s} = (x_n, y_n, a_n)$ is defined such that
+Given an planar target parallel to the image plane, the visual feature vector $\bm{s} = (x_n, y_n, a_n)$ is defined such that
 
 \begin{equation*}
 a_n = Z^\ast \sqrt{\frac{a^\ast}{a}} \\
@@ -17,7 +17,7 @@ x_n = a_n x_g \\
  y_n = a_n y_g 
 \end{equation*}
 
-Where $a$ is the area of the object in the image, $x_g$ and $y_g$ its centroid coordinates, $a^\ast$ the desired area, and $Z^\ast$ the desired depth between the camera and the target. The relationship between the relative motion of the camera and the object and the feature kinematics is given by
+Where $a$ is the area of the object in the image (given in pixels), $\left( x_g , y_g \right) $ are its centroid coordinates (given in pixels), $a^\ast$ the desired area, and $Z^\ast$ the desired depth between the camera and the target (given in meters). The normalization of the initial quantities leads to a better numerical stability in the computation of the interaction matrix, as noted in Section TODO. The relationship between the relative motion of the camera and the object and the feature kinematics is given by
 
 \begin{equation}
 \dot{\bm{s}} = \bm{L_v} \bm{v} + \bm{L_\omega} \bm{\omega}
@@ -25,7 +25,7 @@ Where $a$ is the area of the object in the image, $x_g$ and $y_g$ its centroid c
 
 Here, the linear and angular velocities of the camera (expressed in the camera frame) are $\bm{v}$ and $\bm{\omega}$. The iteration matrix is separated in two matrices, $\bm{L_v}$ related to translation and $\bm{L_\omega}$ related to rotation. The desired image feature is denoted by $\bm{s}^\ast$, and the visual error is defined by $\bm{e} = \bm{s} - \bm{s}^\ast$.
 
-As already mentioned in Section \ref{sec:vs-theory}, linear exponential stability is imposed on the error kinematics to ensure an exponential decoupled decrease for $\bm{e}$ ($\dot{\bm{e}} = - \lambda \bm{e}$, with $\lambda$ a positive gain). Now $\bm{e}$ can be used to control the translational \footnote{Remember that for the case of a quadrotor, it is an underactuated system. Thus, it is only possible to control its translation and yaw.} degrees of freedom using the following control input
+As already mentioned in Section \ref{sec:vs-theory}, linear exponential stability is imposed on the error kinematics to ensure an exponential decoupled decrease for $\bm{e}$ (i.e. $\dot{\bm{e}} = - \lambda \bm{e}$, with $\lambda$ a positive gain). Now $\bm{e}$ can be used to control the translational\footnote{Remember that for the case of a quadrotor, it is an underactuated system. Thus, it is only possible to control its translation and yaw.} degrees of freedom using the following control input
 
 \begin{equation}
 \bm{v} = - (\bm{L_v})^{-1} (\lambda \bm{e} + \bm{L_\omega} \bm{\omega}) \text{ with } \lambda > 0
@@ -45,4 +45,10 @@ In order to control the yaw motion of the system, it is possible to compute the 
 \bm{\omega_z} = \lambda \theta_z \text{ with } \lambda > 0
 \end{equation}
 
-The method presented int his section has some limitations, since it depends on the geometry of the target and considers only smooth and slow trajectories. Any aggressive maneuver, or a case in which the parallel target assumption is invalidated, makes the approximations taken fail. 
+The method presented in this section has some limitations, since it depends on the geometry of the target and considers only smooth and slow trajectories. Any aggressive maneuver, or a case in which the parallel target assumption is invalidated, makes the approximations taken fail.
+
+In case that this algorithm was to be implemented into a fully-actuated aerial robot, it would be necessary to limit the degrees of freedom of the robot so it stays always parallel to the target. Thus, roll and pitch would not be considered. This restriction is no too heavy since the purpose of this work is acquiring a certain pose with respect to a target laying on the ground. 
+
+In order to consider more aggressive maneuvers, the dynamics of the system must be taken into account. Several algorithms have been proposed for this purpose \cite{ozawa_2011} \cite{jabbari_dynamic_2012} \cite{ceren_image_2012}. To cope with the with the limitation of the target being parallel to the image plane, a virtual plane approach \cite{zheng_image-based_2017} can be introduced.
+
+For aerial manipulators, it would be possible to use the above mentioned algorithm to place the robot near the target. Later, an additional visual servoing algorithm could be used to control the arm to conduct the manipulation task. However, in order to take advantage of a fully actuated mobile platform during the manipulation task, it would be specially interesting to use a weighted interaction matrix \cite{santamaria-navarro_uncalibrated_2017} to control not only the arm but also the mobile platform thanks to a partitioned control.
