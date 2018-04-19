@@ -11,7 +11,7 @@ LaTeX document for my Bachelor Thesis written at the Automation Institute of the
 How to compile from TeXstudio
 =============================
 
-- Build the document using `pdflatex`: `Tools > Build & View` 
-- Create bibliography: `Tools > Commands > Biber`
-- Create abbreviation (from terminal): `makeindex thesis_master.nlo -s nomencl.ist -o thesis_master.nls` 
-- Build the document using `pdflatex`: `Tools > Build & View` 
+- Build the document using ``pdflatex``: ``Tools > Build & View`` 
+- Create bibliography: ``Tools > Commands > Biber``
+- Create abbreviation (from terminal): ``makeindex thesis_master.nlo -s nomencl.ist -o thesis_master.nls``
+- Build the document using `pdflatex`: ``Tools > Build & View``
