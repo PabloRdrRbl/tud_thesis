@@ -6,7 +6,7 @@ Image Based Visual Servoing for Aerial Robot
 
 :Author: Pablo Rodríguez Robles |orcid|
 
-LaTeX document for my Bachelor Thesis written at the Automatization Institute of the TU Dresden (Germany), under the supervisión of Dipl.-Ing. Chao Yao and Prof. Dr. techn. Klaus Janschek.
+LaTeX document for my Bachelor Thesis written at the Automation Institute of the TU Dresden (Germany), under the supervisión of Dipl.-Ing. Chao Yao and Prof. Dr. techn. Klaus Janschek.
 
 How to compile from TeXstudio
 =============================
