@@ -48,7 +48,16 @@ Using the camera current image, the target is detected. Once the desired target 
 \end{equation}
  
  Once the feature vectors have been computed, the control error can be obtained as $\bm{e} = \bm{s} - \bm{s}^\ast$ and together with $\theta_z$ are used to compute the control velocities as described in Section \ref{sec:vs-algorithm-description}.
+ 
+ The camera velocities are transformed to the robot frame following the procedure explained in Section TODO and used as input for the low level controller of the robot. 
 	
+\begin{figure}[!htb]
+		\caption{Interaction between the IBVS controller and the low-level controllers}
+	\centering
+	\includegraphics[width=0.5\textwidth]{content/chapter_04/images/context_diagram.pdf}
+	\label{fig:low-level-ibvs}
+\end{figure}
+
 
 
 \section{Visual Servoing Algorithm Description}
