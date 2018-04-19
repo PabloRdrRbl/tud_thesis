@@ -7,4 +7,4 @@ LaTeX document for my Bachelor Thesis written at the Automatization Institute of
 - Build the document using `pdflatex`: `Tools > Build & View` 
 - Create bibliography: `Tools > Commands > Biber`
 - Create abbreviation (from terminal): `makeindex thesis_master.nlo -s nomencl.ist -o thesis_master.nls` 
-- Builds the document using `pdflatex`: `Tools > Build & View` 
+- Build the document using `pdflatex`: `Tools > Build & View` 
