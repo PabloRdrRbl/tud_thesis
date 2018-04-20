@@ -90,7 +90,7 @@ where $\bm{m} = (u, v)$ gives the coordinates of the image point in pixel units,
 	\centering
 	\includegraphics[keepaspectratio, width=9cm]{content/chapter_02/images/pinhole_camera.png}
 	\caption{Pinhole camera model}
-	\label{fig:poster-logo-block}
+	\label{fig:pin-hole}
 \end{figure}
 
 Taking the time derivative of the projection Equation \ref{eq:vs-th-6}, we obtain
@@ -150,6 +150,72 @@ In Equation \ref{eq:vs-th-11}, the value $Z$ corresponds to the depth of the poi
 When the current depth $Z$ of each point is known, there is no need of approximation and $\widehat{\bm{L_e}^+} = \bm{L_e}^+$ for $\bm{L_e} = \bm{L_x}$ can be used. However, this approach requires the estimation of $Z$ for all iterations of the scheme control (see \cite{hutchinson_1996}), which may be conducted by means of pose estimation methods.
 
 A second alternative is to use $\widehat{\bm{L_e}^+} = \bm{L_{e^\ast}}^+$, where $\bm{L_{e^\ast}}$ is the value of $\bm{L_{e}}$ for the desired position ($\bm{e} = \bm{e}^\ast = 0$) (see \cite{espiau_1992}). Here, the depth parameter only needs to be estimated once for every point.
+
+\subsection{Pinhole Camera Model}
+
+The basic idea of a photographic camera is placing a film in front of an object so it records the reflected light on this object, obtaining a representation of the object thanks to the projection of each of the points of the object into the film.
+
+Instead of placing just the film, a barrier is placed between it and the object leaving only a small opening (pinhole) so it blocks most of the rays reducing blurring. This small hole on the barrier is called aperture. The aperture acts as the center of the camera and the distance between the image plane (the film) and the pinhole is known as focal length.
+
+The image formation is driven by the projective geometry. In this kind of geometry, straight lines are also straight in the image and the parallel lines in the 3D space world intersect in the image at the so-called vanishing point.
+ 
+\subsection{Image Moments as Visual Features}
+
+As in other computer vision problems, the choice of visual features has a strong influence on the performance of an visual servo controller. An image feature is a piece of information extracted from an image and may be helpful to solve a certain task. Depending on the problem, different kind of features can be interesting for the user. These features are a specific structure in the image such as points, edges or closed contours, which are detected by means of operations on their pixel neighborhood.
+
+Usually, the desired characteristics \cite{Szeliski2011} for a visual feature are: locality (robust to occlusion and cluttering), invariance to transformations such as rotation or scaling, robustness against noise or compression and efficiency (so they can be computed in real-time). In addition to that, for a visual servoing task it is convenient that the set of features is decoupled, so it can be used to control independently all the degrees of freedom of the robot.
+
+Image moments are the result of a particular weighted average of the pixels' intensities of an image or a combination of various of these moments. They are useful to describe an object after segmentation, and have been used in computer vision for patter-recognition tasks \cite{hu_1962}.
+
+Before the introduction of image moments, other visual features such as points from corner detectors, Fourier descriptors or light intensity where used to carry visual servoing tasks. Image moments result of particular interest for planar objects when the desired configuration is such that the camera plane and the object are parallel. They are easy to compute, robust to noise and its interaction matrix can be computed for any case thanks to the analytical method presented in \cite{chaumette_image_2004}. The inclusion of spherical image moments as visual features has the advantage that they are invariant under rotation of the camera frame \cite{bourquardez_stability_2006}. 
+
+Image moments have also the advantage of being intuitive for simple cases. The simplest example of image moments are the area and centroid coordinates of an object.
+
+For a greyscale image with pixel intensities $I(x, y)$, the raw image moments $m_{ij}$ are computed as
+
+\begin{equation}
+m_{ij} = \sum_{k=1}^n x_k^i y_k^j
+\end{equation}
+
+While entered moments are given by
+
+\begin{equation}
+\mu _{ij} = \sum_{k=1}^n \left( x_k - x_g \right)^i \left( y_k - y_g \right)^j
+\end{equation}
+
+Where for the area $a = m_{00}$ and for the centroid coordinates $\left\lbrace \bar{x_g}, \bar{y_g} \right\rbrace = \left\lbrace m_{10}/m_{00}, m_{01}/m_{00} \right\rbrace $. Any moment defined in this way, is known to be invariant to 2D translational motion. 
+
+Several works \cite{bourquardez_2009} \cite{tahri_2005} introduced the area and centroid coordinates of a target as visual features. For this case, the interaction matrix has the following form \cite{tahri_2005}.
+
+\begin{equation}
+\bm{L}_{x_g} = \begin{bmatrix} -C & 0 & C x_g & \varepsilon_1 & -(1+\varepsilon_2) & y_g \end{bmatrix}
+\end{equation}
+
+In this work, the normalized area and normalized centroid coordinates of a planar target are used as visual features. 
+
+\subsection{Robot Operating System (ROS)}
+
+The Robot Operating System (ROS)\footnote{\url{www.ros.org}} is an open-source, operating system for robots. It provides all the capabilities expected from any operating system, including hardware abstraction, low-level device control, implementation of commonly-used functionalities, message-passing between processes and package management \cite{ROS_Intro}.
+
+ROS works as a peer-to-peer network of processes, called \emph{nodes}, connected through the ROS communication infrastructure. ROS implements several communication interfaces such as \emph{services}, \emph{topics} and a \emph{Parameter Server}.
+
+As a result, ROS works as a framework where the user can implement the desired robotic system modularly as a graph connecting several independent processes. The main ROS concepts are \cite{ROS_Concepts}:
+
+\begin{itemize}
+	\item \emph{Nodes}: Nodes are processes that perform a certain computation. The robotic system is decomposed in functionalities running in each of the in different nodes. For example, one node processes de camera information, other node controls the wheel motors and a third node is responsible of the path planning.
+	
+	\item \emph{Master}:The ROS Master builds and maintains the name registration and lookup of the rest of components of the computation graph, so it allows the identification between nodes to establish the desired communication.
+	
+	\item \emph{Messages}: Messages are the data transfered between nodes. A message is a data structure comprising typed fields. The standard primitive types (integer, float point, boolean, etc.) can be combined in nested structures or arrays.
+	
+	\item \emph{Topics}: Topics are an asynchronous streaming of data between nodes following a publish/subscribe semantic. For example, data coming from a sensor. A node can send out a message through a topic publishing into it and an interested node can receive the message by subscribing the topic. A topic can use only a unique type of message. Topics work as an abstraction layer to separate the data production from the data manipulation using different nodes that communicate between each other without depending one on the other.
+	
+	\item \emph{Services}: A constant stream of data is not always the desired communication case. It is also possible to desire a request/reply interaction between to nodes. For example to start the motors of a robot. This kind of communication is conducted using services. A providing node offers a service under a name and a client uses the service by sending the request message and awaiting the reply.
+	
+	\item \emph{Parameter Server}: The Parameter Server allows data to be stored in a centralized data structure similar to a dictionary, where it can be accessed by any node. 
+\end{itemize}
+
+In the present work, the system designed works as a set of nodes establishing communication between the \emph{action interface} described in the Section TODO, which subscribe to the sensor topics of the robot and publish control command to the command topic of the robot.
 
 \section{State of the Art}
 
