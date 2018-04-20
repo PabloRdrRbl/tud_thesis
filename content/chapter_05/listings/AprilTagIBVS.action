@@ -1,0 +1,9 @@
+# Define the goal
+string tag_id
+geometry_msgs/Pose pose
+---
+# Define the result
+float64 final_error
+---
+# Define a feedback message
+float64 current_error

@@ -23,7 +23,7 @@ All the elements of the system have been implemented as ROS components using the
 	\item \texttt{flypulator\_vs\_task}: Contains the action client for the visual servo controller. The node is used to get the user input for the selection of the desired marker and pose. The desired pose is specified in a text file, while the desired marker is selected by the user by clicking on one of the currently available makers in the camera image. The user input is published so the action server can receive it.
 \end{itemize}
 
-All the C++ code follows the ROS Style Guide\cite{ROS_Style} and has been conveniently documented using the Doxygen\footnote{\url{http://www.stack.nl/~dimitri/doxygen/}} documentation generator tool.
+All the C++ code follows the ROS Style Guide \cite{ROS_Style} and has been conveniently documented using the Doxygen\footnote{\url{http://www.stack.nl/~dimitri/doxygen/}} documentation generator tool.
 
 In the following sections, the most relevant aspects of the implementation are discussed. These are: 
 
@@ -78,11 +78,20 @@ ViSP\footnote{\url{https://visp.inria.fr}} (\emph{Visual Servoing Platform}) is 
 
 \nomenclature[ba]{ViSP}{Visual Servo Platform}
 
-The library provides a \texttt{vpServo} class which contains all the elements of a classical visual servoing control algorithm. The Listing \ref{simple-visp} contains a code snippet with a simple visual servoing task using ViSP.
+The library is written in C++ and distributed for different platforms. It is provides a \texttt{vpServo} class which contains all the elements of a classical visual servoing control algorithm. The Listing \ref{simple-visp} contains a code snippet with a simple visual servoing task using ViSP.
 
+The framework contains a class for each of the common visual features, including the computation of their interaction matrix as explained in Section \ref{sec:image-moments}. ViSP is thoroughly documented, so the reader is recommended to consult the online documentation\cite{visp_doc} for further details. In the case of this work, the features used are implemented in the classes \texttt{vpFeatureMomentAreaNormalized} and \texttt{vpFeatureMomentGravityCenterNormalized }.
+
+The communication between the library and ROS is established via the \texttt{visp\_ros}\footnote{\url{http://wiki.ros.org/visp_ros}} package. The class \texttt{vpROSGrabber} subscribes to the camera image and camera info topics and converts the image from the camera into a format compatible with ViSP. While the class \texttt{vpROSRobot} allows publishing directly to the velocity command topic. It allows ViSP to be run outside the ROS node if desired, although this would result in less integration of the algorithm. The implementation proposed integrates ViSP inside a ROS node, as described in Figure \ref{fig:visual-servo-ros-node}.
+  
 \ifalisting{Simple ViSP example}{simple-visp}{c++}{none}{content/chapter_05/listings/visp_simple_example.cpp}{true}
 
-The framework contains a class for each of the common visual features, including the computation of their interaction matrix as explained in Section TODO. ViSP is thoroughly documented, so the reader is recommended to consult the online documentation\cite{visp_doc} for further details.
+\begin{figure}[!htb]
+	\caption[Architecture of ViSP running inside a ROS node]{Architecture of ViSP running inside a ROS node~\protect\cite{visp_ros}}
+	\centering
+	\includegraphics[width=0.4\textwidth]{content/chapter_05/images/visual-servo-ros-node.png}
+	\label{fig:visual-servo-ros-node}
+\end{figure}
 
 \section{AprilTag Markers}
 \label{sec:apriltag_markers}
@@ -122,7 +131,15 @@ The possibility of having several markers is very useful for manipulation tasks,
 	\label{fig:fly2tags}
 \end{figure}
 
-
-
 \section{ROS Actions}
 \label{sec:ros_actions}
+
+In this section, the action\footnote{\url{http://wiki.ros.org/actionlib}} interface created for the visual servo controller is described. The purpose of this interface is to separate the user's task creation and the proper task execution carried  by the controller.
+
+The action interface comprises two agents, the action client and the action server. The action server is always running, waiting for the client to send a new task (a new \emph{action}).
+
+An action \cite{ROS_ComPat} is an abstraction of a discrete behavior that moves the robot or runs for a longer time but producing feedback during the execution. Examples of possible actions are moving the arm of a robot to a certain pose, point the head of a robot into a desired point or perform a laser scan. In this case, the action is placing the aerial robot into the desired posed with respect to the target using a visual servoing algorithm.
+
+ Each action is defined by three elements if form of messages on which the server and client communicate: the \emph{goal}, \emph{feedback} and \emph{result}. These messages are created in de \emph{action descriptor}. The action descriptor for the IBVS action is placed in the package \texttt{flypulator\_vs\_msgs} withing the directory \texttt{action} in a file called \texttt{AprilTagIBVS.action} (see Listing \ref{AprilTagIBVS}).
+
+\ifalisting{Action descriptor for the IBVS task}{AprilTagIBVS}{C++}{none}{content/chapter_05/listings/AprilTagIBVS.action}{true}
