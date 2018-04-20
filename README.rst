@@ -16,6 +16,8 @@ Image Based Visual Servoing for Aerial Robot
 :Institution: Automation Institute of the TU Dresden (Germany)
 :Defense date: 2018/05/02
 
+The implmentation of the system described in this thesis is available here under MIT license: https://github.com/PabloRdrRbl/flypulator_vs
+
 How to compile from TeXstudio
 =============================
 
