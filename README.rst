@@ -9,9 +9,9 @@ Image Based Visual Servoing for Aerial Robot
 .. |orcid| image:: https://img.shields.io/badge/id-0000--0002--2187--161X-a6ce39.svg
    :target: https://orcid.org/0000-0002-1339-7401
 
+:Title: Image Based Visual Servoing for Aerial Robot
 :Author: Pablo Rodríguez Robles |orcid|
 :Document type: Bachelor Thesis
-:Title: Image Based Visual Servoinf for Aerial Robot
 :Advisors: Dipl.-Ing. Chao Yao and Prof. Dr. techn. Klaus Janschek
 :Institution: Automation Institute of the TU Dresden (Germany)
 :Defense date: 2018/05/02
