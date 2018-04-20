@@ -1,15 +1,69 @@
 %!TEX root = ../../thesis_master.tex
 
 %%%%%%%%%%
-\chapter{Visual Servoing Algorithm Description}
-\label{chap:algorithm-drescription}
+\chapter{System Design}
+\label{chap:system-design}
 %%%%%%%%%%
 
-\section{IBVS Using Perspective Projections}
+In Chapter \ref{chap:theory-state-art} the theoretical basis of visual servo controllers and ROS systems was presented. Later, in Chapter \ref{chap:srs-sa}, the desired product was defined thanks to the \emph{Software Requirements Specification} and the \emph{Structured Analysis}. In this chapter, the system design adopted to achieve the above described product is presented.
 
-In this section, an IBVS scheme for the control of the translation and kinematics of an aerial vehicle is presented (see \cite{bourquardez_2009}). The implementation details of this algorithm are given in Section \ref{sec:implementation-perspective}. 
+In order to complete its task, the system must follow the following steps:
 
-Given an object, the visual feature vector $\bm{s} = (x_n, y_n, a_n)$ is defined such that
+\begin{enumerate}
+	\item Receive the desired target from the user.
+	
+	\item Receive the desired pose with respect to the target from the user.
+	
+	\item Compute the visual features from the desired pose to be used as desired features $\bm{s}^\ast$.
+	
+	\item Detect the desired target.
+	
+	\item Compute the visual features form the current pose to be used as current features $\bm{s}$.
+	
+	\item Compute the feature difference to be used as control error and send to the user as feedback.
+	
+	\item Compute the interaction matrix for the current features.
+	
+	\item Compute the control linear velocity inputs in the camera frame.
+	
+	\item Transform from the control linear velocity inputs from the camera frame to the robot frame.
+	
+	\item Compute the target rotation around the $z\text{-axis}$.
+	
+	\item Compute the control angular velocity input around the $z\text{-axis}$.
+	
+	\item Send the velocity command to the low-level controller of the robot.
+	
+	\item Stop when the control error has achieved a certain tolerance.
+\end{enumerate}
+	
+The target used is an \emph{AprilTag}\footnote{\url{https://april.eecs.umich.edu/software/apriltag.html}}, a square marker placed on the ground. Several markers can be present in the scene and the user must be able to select them. This feature is useful for a manipulator, since different targets may me necessary for its task. In a similar way, the user must be able of specifying the desired pose, so it can vary depending on the task to be conducted.
+
+Using as frame of reference the target's center, the coordinates of the target's corners (in 3D coordinates in meters) can be computed, since the dimensions of the target are know. Using the desired pose, the corner coordinates are transformed to the camera frame (3D coordinates in meters) and projected into the image plane (2D coordinates in pixels). With the pixel information, the desired image moment features can be computed as described in TODO so the $\bm{s}^\ast$ vector is obtained.
+ 
+Using the camera current image, the target is detected. Once the desired target is detected its corner's coordinates are obtained already in the image plane (in pixels), so the current vector image moment features $\bm{s}$ can also be computed. The rotation of the target can be also computed from the corner's coordinates as
+
+\begin{equation}
+ \theta_z = \arctan \left( \frac{tr_i - tl_i}{tr_j - tl_j} \right) 
+\end{equation}
+ 
+ Once the feature vectors have been computed, the control error can be obtained as $\bm{e} = \bm{s} - \bm{s}^\ast$ and together with $\theta_z$ are used to compute the control velocities as described in Section \ref{sec:vs-algorithm-description}.
+ 
+ The camera velocities are transformed to the robot frame following the procedure explained in Section TODO and used as input for the low level controller of the robot. 
+	
+\begin{figure}[!htb]
+		\caption{Interaction between the IBVS controller and the low-level controllers}
+	\centering
+	\includegraphics[width=0.5\textwidth]{content/chapter_04/images/context_diagram.pdf}
+	\label{fig:low-level-ibvs}
+\end{figure}
+
+\section{Visual Servoing Algorithm Description}
+\label{sec:vs-algorithm-description}
+
+In this section, an IBVS scheme for the control of the translation and yaw rotation kinematics \cite{bourquardez_2009} of an aerial robot is presented. The implementation details of this algorithm as a ROS system are given in Section \ref{sec:implementation-perspective}. 
+
+Given an planar target parallel to the image plane, the visual feature vector $\bm{s} = (x_n, y_n, a_n)$ is defined such that
 
 \begin{equation*}
 a_n = Z^\ast \sqrt{\frac{a^\ast}{a}} \\
@@ -17,7 +71,7 @@ x_n = a_n x_g \\
  y_n = a_n y_g 
 \end{equation*}
 
-Where $a$ is the area of the object in the image, $x_g$ and $y_g$ its centroid coordinates, $a^\ast$ the desired area, and $Z^\ast$ the desired depth between the camera and the target. The relationship between the relative motion of the camera and the object and the feature kinematics is given by
+Where $a$ is the area of the object in the image (given in pixels), $\left( x_g , y_g \right) $ are its centroid coordinates (given in pixels), $a^\ast$ the desired area, and $Z^\ast$ the desired depth between the camera and the target (given in meters). The normalization of the initial quantities leads to a better numerical stability in the computation of the interaction matrix, as noted in Section TODO. The relationship between the relative motion of the camera and the object and the feature kinematics is given by
 
 \begin{equation}
 \dot{\bm{s}} = \bm{L_v} \bm{v} + \bm{L_\omega} \bm{\omega}
@@ -25,7 +79,7 @@ Where $a$ is the area of the object in the image, $x_g$ and $y_g$ its centroid c
 
 Here, the linear and angular velocities of the camera (expressed in the camera frame) are $\bm{v}$ and $\bm{\omega}$. The iteration matrix is separated in two matrices, $\bm{L_v}$ related to translation and $\bm{L_\omega}$ related to rotation. The desired image feature is denoted by $\bm{s}^\ast$, and the visual error is defined by $\bm{e} = \bm{s} - \bm{s}^\ast$.
 
-As already mentioned in Section \ref{sec:vs-theory}, linear exponential stability is imposed on the error kinematics to ensure an exponential decoupled decrease for $\bm{e}$ ($\dot{\bm{e}} = - \lambda \bm{e}$, with $\lambda$ a positive gain). Now $\bm{e}$ can be used to control the translational \footnote{Remember that for the case of a quadrotor, it is an underactuated system. Thus, it is only possible to control its translation and yaw.} degrees of freedom using the following control input
+As already mentioned in Section \ref{sec:vs-theory}, linear exponential stability is imposed on the error kinematics to ensure an exponential decoupled decrease for $\bm{e}$ (i.e. $\dot{\bm{e}} = - \lambda \bm{e}$, with $\lambda$ a positive gain). Now $\bm{e}$ can be used to control the translational\footnote{Remember that for the case of a quadrotor, it is an underactuated system. Thus, it is only possible to control its translation and yaw.} degrees of freedom using the following control input
 
 \begin{equation}
 \bm{v} = - (\bm{L_v})^{-1} (\lambda \bm{e} + \bm{L_\omega} \bm{\omega}) \text{ with } \lambda > 0
@@ -45,4 +99,10 @@ In order to control the yaw motion of the system, it is possible to compute the 
 \bm{\omega_z} = \lambda \theta_z \text{ with } \lambda > 0
 \end{equation}
 
-The method presented int his section has some limitations, since it depends on the geometry of the target and considers only smooth and slow trajectories. Any aggressive maneuver, or a case in which the parallel target assumption is invalidated, makes the approximations taken fail. 
+The method presented in this section has some limitations, since it depends on the geometry of the target and considers only smooth and slow trajectories. Any aggressive maneuver, or a case in which the parallel target assumption is invalidated, makes the approximations taken fail.
+
+In case that this algorithm was to be implemented into a fully-actuated aerial robot, it would be necessary to limit the degrees of freedom of the robot so it stays always parallel to the target. Thus, roll and pitch would not be considered. This restriction is no too heavy since the purpose of this work is acquiring a certain pose with respect to a target laying on the ground. 
+
+In order to consider more aggressive maneuvers, the dynamics of the system must be taken into account. Several algorithms have been proposed for this purpose \cite{ozawa_2011} \cite{jabbari_dynamic_2012} \cite{ceren_image_2012}. To cope with the with the limitation of the target being parallel to the image plane, a virtual plane approach \cite{zheng_image-based_2017} can be introduced.
+
+For aerial manipulators, it would be possible to use the above mentioned algorithm to place the robot near the target. Later, an additional visual servoing algorithm could be used to control the arm to conduct the manipulation task. However, in order to take advantage of a fully actuated mobile platform during the manipulation task, it would be specially interesting to use a weighted interaction matrix \cite{santamaria-navarro_uncalibrated_2017} to control not only the arm but also the mobile platform thanks to a partitioned control.

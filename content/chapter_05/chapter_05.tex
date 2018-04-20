@@ -1,9 +1,128 @@
 %!TEX root = ../../thesis_master.tex
 
 %%%%%%%%%%
-\chapter{Implementation of the Visual Servoing Controller}
+\chapter{Implementation}
 \label{chap:implementation}
 %%%%%%%%%%
 
-\section{IBVS Using Perspective Projections}
-\label{sec:implementation-perspective}
+In this chapter, the implementation details of the system previously described are given.
+
+All the elements of the system have been implemented as ROS components using the C++ API. The code is organized as a stack called \texttt{flypulator\_vs} and composed of five ROS packages described below. All the source code is available on GitHub\footnote{\url{https://github.com/PabloRdrRbl/flypulator_vs}} under an GPLv3 license\footnote{\url{https://github.com/PabloRdrRbl/flypulator_vs/blob/master/LICENSE}}. The content of each of the following ROS packages is the following:
+
+\nomenclature[ba]{API}{Application Programming Interface}
+
+\begin{itemize}
+	\item \texttt{flypulator\_vs\_controller}: Contains the action server for the visual servo controller. The node receives a desired marker and pose, conducts the corresponding visual servoing task and publishes the velocities to the robot command topic. Additionally the action server publishes feedback about the current task.
+	
+	\item \texttt{flypulator\_vs\_demo}: Contains the ROS launch files to run all the components needed for a demonstration of the controller.
+	
+	\item \texttt{flypulator\_vs\_gazebo}: Contains the URDF files for the markers and the world used during the simulation.
+	
+	\item \texttt{flypulator\_vs\_msgs}: Contains the description of the action server.
+	
+	\item \texttt{flypulator\_vs\_task}: Contains the action client for the visual servo controller. The node is used to get the user input for the selection of the desired marker and pose. The desired pose is specified in a text file, while the desired marker is selected by the user by clicking on one of the currently available makers in the camera image. The user input is published so the action server can receive it.
+\end{itemize}
+
+All the C++ code follows the ROS Style Guide\cite{ROS_Style} and has been conveniently documented using the Doxygen\footnote{\url{http://www.stack.nl/~dimitri/doxygen/}} documentation generator tool.
+
+In the following sections, the most relevant aspects of the implementation are discussed. These are: 
+
+\begin{itemize}
+	\item How are the hardware and environment simulated?
+	
+	\item How is the target detection and tracking conducted?
+	
+	\item How is the visual servoing algorithm implemented?
+	
+	\item How the system integrated as a ROS component?
+\end{itemize}
+
+
+\section{Gazebo Simulation}
+\label{sec:gazebo-simulation}
+
+It has been already explained how ROS works as an operating system for the robot, allowing the complete implementation of a robotic system. This is valid not only for real hardware, but also for simulated robots. In order to do that, an additional tool is needed to work along with ROS. This is the roll of the Gazebo robotics simulator.
+
+Gazebo is a 3D dynamic simulator used to simulate robotic environments. It allows the kinematic and dynamic simulation of robots and other bodies, indoor and outdoor environments with different illumination conditions and textures and the emulation of sensors such as cameras or light rangers. Additionally, using the Gazebo plug-in's it is possible to model more complex phenomenas including, aerodynamics or controllers.
+
+\emph{Gazebo} works as an additional ROS node. It subscribes to the topics containing the robot's current state and publishes in other topics the new state of the robot. An example of this architecture is shown in Figure \ref{fig:gazebo_example}.
+
+\begin{figure}[!htb]
+	\caption{Example of a simple communication between Gazebo and the rest the ROS environment of a quadrotor simulation}
+	\centering
+	\includegraphics[width=\textwidth]{content/chapter_05/images/gazebo_example.png}
+	\label{fig:gazebo_example}
+\end{figure}
+
+In order to use a robot in \emph{Gazebo}, it is necessary to convert its CAD files to the \emph{Unified Robot Description Format} (URDF). This is an XML format for representing a robot model. A similar procedure is also followed to introduce any other model in the simulation, for example the target markers.
+
+\nomenclature[ba]{CAD}{Computer Aided Design}
+\nomenclature[ba]{URDF}{Unified Robot Description Format}
+
+Once the robot and the markers have been spawned in the desired world (Gazebo's scenes) the simulator publishes data such as the camera images or the robot state and subscribes to the velocity commands and motor status of the robot. In this manner, it is possible to simulate not only the robot dynamics due to the input commands, but also the sensor data readings of the robot for this state (e.g. the camera image).
+
+For this work, the quadrotor \texttt{hector\_quadrotor}\footnote{\url{http://wiki.ros.org/hector_quadrotor}} has been used. It contains not only the robot description in form of URDF files, but also the low-level controllers necessary to command the robot via kinematic inputs. The desired linear and angular velocities are published to the \texttt{\textbackslash cmd\_vel} topic the low-level controllers, which compute the necessary motor inputs and allow the control ot the translation and yaw of the robot. Additional, the quadrotor has an on-board camera pointing downwards, which is simulated by Gazebo, who publishes into two topics\footnote{In the code the topics are called respectively \texttt{\textbackslash camera\textbackslash image} and \texttt{\textbackslash camera\textbackslash info} for compatibility with other robots. The mentioned names are remapped where the visual servo controller is launched.}:
+
+\begin{itemize}
+	\item \texttt{\textbackslash downward\_camera\textbackslash camera\textbackslash image}: Contains the camera image simulated by Gazebo.
+	
+	\item \texttt{\textbackslash downward\_camera\textbackslash camera\textbackslash info}: Contains the camera intrinsic parameters.
+\end{itemize}
+
+The \texttt{flypulator\_vs\_gazebo} package contains all launch files to start the Gazebo simulation under the directory \texttt{\textbackslash launch}. The \texttt{hector\_quadrotor} stack is installed separately and called by the launch file \texttt{start.launch}. Any other robot could be spawned in a similar manner.
+
+\section{ViSP Visual Servoing Framework}
+\label{sec:visp}
+
+ViSP\footnote{\url{https://visp.inria.fr}} (\emph{Visual Servoing Platform}) is a visual servoing open source framework for the development of visual tracking and visual servoing systems created by the Inria Lagadic\footnote{\url{http://team.inria.fr/lagadic/}} team. ViSP allows the computation and tracking of visual features, the design of control laws for a robotic system and other computer vision tools \cite{visp_hp}.
+
+\nomenclature[ba]{ViSP}{Visual Servo Platform}
+
+The library provides a \texttt{vpServo} class which contains all the elements of a classical visual servoing control algorithm. The Listing \ref{simple-visp} contains a code snippet with a simple visual servoing task using ViSP.
+
+\ifalisting{Simple ViSP example}{simple-visp}{c++}{none}{content/chapter_05/listings/visp_simple_example.cpp}{true}
+
+The framework contains a class for each of the common visual features, including the computation of their interaction matrix as explained in Section TODO. ViSP is thoroughly documented, so the reader is recommended to consult the online documentation\cite{visp_doc} for further details.
+
+\section{AprilTag Markers}
+\label{sec:apriltag_markers}
+
+AprilTag\footnote{\url{https://april.eecs.umich.edu/software/apriltag/}} is a visual fiducial system, useful for a wide variety of tasks including augmented reality, robotics and camera calibration. Targets can be created from an ordinary printer, and the AprilTag detection software computes the precise 3D position, orientation, and identity of the tags relative to the camera \cite{apriltag_hp}. 
+
+In this work, AprilTag markers have been used as target. Any detected AprilTag can be used to compute the relative pose between the camera and the marker frame of reference. Since the IBVS algorithm does not use any pose computation, here only the marker detection is used. Once the marker has been detected, the detector returns a list of the camera coordinates of the corners of the marker ordered clock-wise and starting in the bottom-left cornet of the tag, as indicated in Figure \ref{fig:april-frames}.
+
+\begin{figure}[!htb]
+	\caption{Example of simple communication between Gazebo and ROS}
+	\centering
+	\includegraphics[width=0.4\textwidth]{content/chapter_05/images/april-frames}
+	\label{fig:april-frames}
+\end{figure}
+
+The AprilTag detector is provided by the creators of the tags and implemented  in different programming languages. Here the \texttt{vpDetectorAprilTag} detector wrapper provided in ViSP is used. 
+
+\ifalisting{Simple AprilTag detection example}{example-april}{c++}{none}{content/chapter_05/listings/apriltag_detector_example.cpp}{true}
+
+Once the four corners of the marker are detected, it is possible to compute the image features as described in Chapter \ref{chap:system-design}. The marker tracking is not necessary, since it is not moving it is just detected every cycle of the control algorithm. The markers are arranged in families (the implementation uses the \texttt{36h11} family), so different makers can be present in the camera image. The detector detects all of them, so the user can access each of them using their respective ID. Figure \ref{fig:apriltag-detection} shows the detection of two different target during a simulation, as well as the tagets' IDs.
+
+\begin{figure}[!htb]
+	\caption{AprilTag detection in a multi-target image}
+	\centering
+	\includegraphics[width=0.7\textwidth]{content/chapter_05/images/april-detection.png}
+	\label{fig:apriltag-detection}
+\end{figure}
+
+The possibility of having several markers is very useful for manipulation tasks, where several objects can be together. In this case, the system could select a target among all the present possibilities. In order to select a target, the system only needs the ID of the desired marker. This can be obtained from a user click, a data base relating IDs and objects or a text file.
+
+ In order to integrate the AprilTag's markers in Gazebo, a cube of dimensions $25\text{cm}\times25\text{cm}\times1\text{mm}$ was created in Blender\footnote{\url{https://www.blender.org}}. For each marker, the AprilTag image was rescaled to the dimension of the cube's face and applied as texture of the cube using the \emph{UV Unwrapping} tool. The Blender object was finally exported as a COLLADA file. All the Gazebo implementation of the AprilTags is in the \texttt{flypulator\_vs\_gazebo} package. The COLLADA file is spawned as URDF file using the \texttt{generic\_spawn.launch} launch file.
+
+\begin{figure}[!htb]
+	\caption{Quadrotor flying over two AprilTags in a Gazebo simulation}
+	\centering
+	\includegraphics[width=0.5\textwidth]{content/chapter_05/images/fly2tags.png}
+	\label{fig:fly2tags}
+\end{figure}
+
+
+
+\section{ROS Actions}
+\label{sec:ros_actions}
