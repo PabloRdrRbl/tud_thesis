@@ -131,18 +131,24 @@ The possibility of having several markers is very useful for manipulation tasks,
 	\label{fig:fly2tags}
 \end{figure}
 
-\section{ROS Actions}
-\label{sec:ros_actions}
+\section{ROS Action Interface}
+\label{sec:ros_action}
 
-In this section, the action\footnote{\url{http://wiki.ros.org/actionlib}} interface created for the visual servo controller is described. The purpose of this interface is to separate the user's task creation and the proper task execution carried  by the controller.
+In this section, the action interface created for the visual servo controller is described. The purpose of this interface is to separate the task creation by the user and the task execution in the controller. The action interface is provided by ROS in the \texttt{actionlib}\footnote{\url{http://wiki.ros.org/actionlib}} package.
 
 The action interface comprises two agents, the action client and the action server. The action server is always running, waiting for the client to send a new task (a new \emph{action}).
 
-An action \cite{ROS_ComPat} is an abstraction of a discrete behavior that moves the robot or runs for a longer time but producing feedback during the execution. Examples of possible actions are moving the arm of a robot to a certain pose, pointing the head of a robot into a desired point or performing a laser scan. In this case, the action is placing the aerial robot into the desired pose with respect to the target using a visual servoing algorithm.
+An action \cite{ROS_ComPat} is an abstraction of a discrete behavior that moves the robot or runs for a longer time, producing feedback during the execution. Examples of possible actions are moving the arm of a robot to a certain pose, pointing the head of a robot into a desired point or performing a laser scan. In this case, the action is commanding the aerial robot towards the desired pose with respect to the target using a visual servoing algorithm.
 
- Each action is defined by three elements if form of messages on which the server and client communicate: the \emph{goal}, \emph{feedback} and \emph{result}. These messages are created in de \emph{action descriptor}. The action descriptor for the IBVS action is placed in the package \texttt{flypulator\_vs\_msgs} within the directory \texttt{action} in a file called \texttt{AprilTagIBVS.action} (see Listing \ref{AprilTagIBVS}).
+Using an action interface has several advantages with respect to the other communication methods provided in ROS. An alternative implementation could be running the entire visual servo controller in a unique node. The node could be launched using a service and the feedback could be published into a topic. But services block the communication while there are running and shut down when they are finished, they are though to a short task like switching on the robot motors. While the action can be preempted in any moment, e.g. when another goal is sent by a other client, and the server keeps waiting for a new goal. Furthermore, the action interface allows the separation of the goal generation and the goal search. Services can be used to start the low-level controllers of the robot at the start of the simulation, since the low-level controllers are activated only one and keep running all the time. While the action allows the visual servoing task to be started several times during the robot's operation.
+
+ Each action is defined by three elements if form of messages on which the server and client communicate: the \emph{goal}, \emph{feedback} and \emph{result}. These messages are created in de \emph{action descriptor}. The action descriptor for the IBVS action is placed in the package \texttt{flypulator\_vs\_msgs} within the directory \texttt{\textbackslash action} in a file called \texttt{AprilTagIBVS.action} and reproduced in the Listing \ref{AprilTagIBVS}. For each of the three elements, one or more variables are created, each of them defined by a message type and a name.
 
 \ifalisting{Action descriptor for the IBVS task}{AprilTagIBVS}{C++}{none}{content/chapter_05/listings/AprilTagIBVS.action}{true}
+
+The action server is implemented within the \texttt{flypulator\_vs\_controller} as a node called \texttt{vs\_action\_server}. It contains the ViSP code to execute the IBVS task based on the goal provided to it. The code is structured around the class \texttt{VisualServoingServer}. The class constructor receives the parameters of the servo controller from the ROS Parameter Server and subscribes to the robot command and camera topics. Finally it starts the action server.
+
+Every time that the action server receives a new request from the client, the method \texttt{executeCB} is used as callback, running the visual servoing task. During the servo task, the node publishes feedback in the \texttt{\textbackslash vs\_action\textbackslash feedback} topic, where the feedback is in this case the current error of the control law. When the tolerance of the control error has been achieved, the control law stops the robot and terminates and the server publishes the last control error in the \texttt{\textbackslash vs\_action\textbackslash result}. Additionally, the server tells the client that the task was finished. So the client can shut down while the server keeps running waiting for another client request. In Figure \ref{fig:action_interface}, the basic architecture of the action interface is presented, while Figure \ref{fig:action_interface_ros} shows a part of the ROS network while the visual servoing controller is running.
 
 \begin{figure}[!htb]
 	\caption{Basic architecture of the implemented action interface}
@@ -150,3 +156,32 @@ An action \cite{ROS_ComPat} is an abstraction of a discrete behavior that moves 
 	\includegraphics[width=\textwidth]{content/chapter_05/images/action_interface.pdf}
 	\label{fig:action_interface}
 \end{figure}
+
+In order to set a concrete goal for the action server a client is necessary. The goal assignation is completely independent from the servo control implementation, i.e. the user can write a new client to assign the goal according to his/her respective needs. The only requirement is that the node runs a client using the class \texttt{SimpleActionClient} provided by the \texttt{actionlib} package and the action message type created in the action descriptor. A simple implementation of a client for the IBVS controller is presented in the Listing \ref{simple_action_server}.
+
+However, for this work a more complex client was written. When the client launches the current image seen by the camera is displayed, so the user can click the desired AprilTag. The desired pose is prescribed using the quaternion from the traget's reference system $O$ to the camera optical frame $C$, as in the previous example. This implementation is contained in the package \texttt{flypulator\_vs\_client} within the class \texttt{VisualServoingClient}.
+
+\ifalisting{Simple action server for the IBVS controller}{simple_action_server}{C++}{none}{content/chapter_05/listings/simple_action_client_example.cpp}{true}
+
+\begin{figure}[!htb]
+	\caption{Example of ROS network while running the robot simulation and the visual servo controller}
+	\centering
+	\includegraphics[width=\textwidth]{content/chapter_05/images/action_interface_rqt.png}
+	\label{fig:action_interface_ros}
+\end{figure}
+
+\section{Controller Parameter Server}
+\label{sec:parameter_server}
+
+The ROS Parameter Server\footnote{\url{http://wiki.ros.org/Parameter\%20Server}}  is used to allow to modify the controller's gain. As already explained in Section \ref{sec:ROS_theory}, the Parameter Server allows a the centralized data storage in form of dictionary structure. 
+
+New parameters can be added in form of a YAML\footnote{\url{http://yaml.org}} file. YAML is a human-readable data serialization language commonly used for configuration files. For the visual servo controller this file is located in the package \texttt{flypulator\_vs\_controller} within the directory \texttt{\textbackslash params} in a file called \texttt{params.yaml} and reproduced in the Listing \ref{vs_params}.
+
+\ifalisting{Configuration file for the parameters of the visual servo controller}{vs_params}{}{none}{content/chapter_05/listings/params.yaml}{true}
+
+The parameters are published under a given name space, in this case the \texttt{vs\_parameter\_server\_namespace}. Additional levels can be defined within the YAML file. The desired parameters are written in the file which is loaded in the ROS network through the following line in the launch file (see Listing \ref{vs_launch}).
+
+ To access the data from a given node, the \texttt{ros::NodeHandle::param()} method is used. 
+
+\ifalisting{ROS launch file for the visual servo controller action server}{vs_launch}{XML}{none}{content/chapter_05/listings/vs_controller.launch
+}{true}

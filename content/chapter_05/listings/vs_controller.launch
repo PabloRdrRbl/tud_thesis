@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <!-- Launch visual servo controller node -->
+  <node pkg="flypulator_vs_controller"
+        type="vs_controller"
+        name="vs_action_server">
+    
+    <remap from="/cmd_vel" to="/cmd_vel"/>
+    <remap from="/camera/image"
+           to="/downward_cam/camera/image"/>
+    <remap from="/camera/info"
+           to="/downward_cam/camera/info"/>
+  </node>
+
+  <!-- Load visual servo controller parameters -->
+  <rosparam ns="vs_parameter_server"
+            file="$(find flypulator_vs_controller)/params/params.yaml"/>
+
+</launch>

@@ -1,0 +1,9 @@
+use_adapt_lambda: true
+
+lambda/lambda: 0.01
+
+lambda/zero: 1.5
+lambda/inf: 0.3
+lambda/slope: 40.0
+
+lambda/w: 0.2

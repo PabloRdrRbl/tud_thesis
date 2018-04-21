@@ -5,6 +5,34 @@
 \label{chap:theory-state-art}
 %%%%%%%%%%
 
+\section{Reference Frames}
+\label{sec:reference-frames}
+
+Throughout this work, different frames of reference are used to indicate the pose of the robot or the position of some point in space. In this section the different that will be used in the rest of the text are presented.
+
+\begin{figure}[ht]
+	\caption{Reference frames used in this work}
+	\centering
+	\includegraphics[keepaspectratio, width=10cm]{content/chapter_02/images/frames.png}
+	\label{fig:ref_frames}
+\end{figure}
+
+\pagebreak
+
+\begin{itemize}
+	\item \emph{Inertial frame} ($I$). Coincident with the Gazebo's \texttt{world} frame.
+	
+	\item \emph{Body frame} ($B$). Coincident with the robot's URDF description \texttt{base\_link} frame. The $x$-axis pointing in the frontal direction of the robot and the $z$-axis pointing upwards.
+	
+	\item \emph{Camera frame} ($C$). Centered in the camera center with the $x$-axis pointing right in the image and the y-axis pointing downwards in the image. As a result, the $z$-axis points where the camera is pointing, in this case downwards. Coincident with the \texttt{downward\_cam\_optical\_frame} frame.
+	
+	\item \emph{Tag frame} ($T$). Centered in the tag center with the $x$-axis pointing upwards in the image and the y-axis pointing right in the image. See also Figure \ref{fig:april-frames}.
+	
+	\item \emph{Object frame} ($O$). Centered in the tag center with$x$-axis pointing right in the image and the y-axis pointing downwards in the image.
+\end{itemize}
+
+% TODO: add image plane
+
 \section{Visual Servoing Theoretical Basics}
 \label{sec:vs-theory}
 
@@ -158,7 +186,7 @@ The basic idea of a photographic camera is placing a film in front of an object 
 Instead of placing just the film, a barrier is placed between it and the object leaving only a small opening (pinhole) so it blocks most of the rays reducing blurring. This small hole on the barrier is called aperture. The aperture acts as the center of the camera and the distance between the image plane (the film) and the pinhole is known as focal length.
 
 The image formation is driven by the projective geometry. In this kind of geometry, straight lines are also straight in the image and the parallel lines in the 3D space world intersect in the image at the so-called vanishing point.
- 
+  
 \subsection{Image Moments as Visual Features}
 \label{sec:image-moments}
 
@@ -195,6 +223,7 @@ Several works \cite{bourquardez_2009} \cite{tahri_2005} introduced the area and 
 In this work, the normalized area and normalized centroid coordinates of a planar target are used as visual features. 
 
 \subsection{Robot Operating System (ROS)}
+\label{sec:ROS_theory}
 
 The Robot Operating System (ROS)\footnote{\url{www.ros.org}} is an open-source, operating system for robots. It provides all the capabilities expected from any operating system, including hardware abstraction, low-level device control, implementation of commonly-used functionalities, message-passing between processes and package management \cite{ROS_Intro}.
 

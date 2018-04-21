@@ -5,51 +5,59 @@
 \label{chap:system-design}
 %%%%%%%%%%
 
-In Chapter \ref{chap:theory-state-art} the theoretical basis of visual servo controllers and ROS systems was presented. Later, in Chapter \ref{chap:srs-sa}, the desired product was defined thanks to the \emph{Software Requirements Specification} and the \emph{Structured Analysis}. In this chapter, the system design adopted to achieve the above described product is presented.
+In Chapter \ref{chap:theory-state-art} the theoretical basis of visual servo controllers and ROS systems were presented. Later, in Chapter \ref{chap:srs-sa}, the desired product was defined thanks to the \emph{Software Requirements Specification} and the \emph{Structured Analysis}. In this chapter, the system design adopted to achieve the above described product is presented.
 
-In order to complete its task, the system must follow the following steps:
+In order to complete its task, the system must use the five functions defined in Section \ref{sec:functional-requirements}, which can be divided in the following steps:
 
-\begin{enumerate}
-	\item Receive the desired target from the user.
+\begin{itemize}
+	\item \textbf{Step 1}. Receive the desired target from the user.
 	
-	\item Receive the desired pose with respect to the target from the user.
+	\item \textbf{Step 2}. Receive the desired pose with respect to the target from the user.
 	
-	\item Compute the visual features from the desired pose to be used as desired features $\bm{s}^\ast$.
+	\item \textbf{Step 3}. Compute the visual features from the desired pose to be used as desired features $\bm{s}^\ast$.
 	
-	\item Detect the desired target.
+	\item \textbf{Step 4}. Detect the desired target.
 	
-	\item Compute the visual features form the current pose to be used as current features $\bm{s}$.
+	\item \textbf{Step 5}. Compute the visual features form the current pose to be used as current features $\bm{s}$.
 	
-	\item Compute the feature difference to be used as control error and send to the user as feedback.
+	\item \textbf{Step 6}. Compute the feature difference to be used as control error and send to the user as feedback.
 	
-	\item Compute the interaction matrix for the current features.
+	\item \textbf{Step 7}. Compute the interaction matrix for the current features.
 	
-	\item Compute the control linear velocity inputs in the camera frame.
+	\item \textbf{Step 8}. Compute the control linear velocity inputs in the camera frame.
 	
-	\item Transform from the control linear velocity inputs from the camera frame to the robot frame.
+	\item \textbf{Step 9}. Transform from the control linear velocity inputs from the camera frame to the robot frame.
 	
-	\item Compute the target rotation around the $z\text{-axis}$.
+	\item \textbf{Step 10}. Compute the target rotation around the $z\text{-axis}$.
 	
-	\item Compute the control angular velocity input around the $z\text{-axis}$.
+	\item \textbf{Step 11}. Compute the control angular velocity input around the $z\text{-axis}$.
 	
-	\item Send the velocity command to the low-level controller of the robot.
+	\item \textbf{Step 12}. Send the velocity command to the low-level controller of the robot.
 	
-	\item Stop when the control error has achieved a certain tolerance.
-\end{enumerate}
+	\item \textbf{Step 13}. Stop when the control error has achieved a certain tolerance.
+\end{itemize}
 	
-The target used is an \emph{AprilTag}\footnote{\url{https://april.eecs.umich.edu/software/apriltag.html}}, a square marker placed on the ground. Several markers can be present in the scene and the user must be able to select them. This feature is useful for a manipulator, since different targets may me necessary for its task. In a similar way, the user must be able of specifying the desired pose, so it can vary depending on the task to be conducted.
+For \emph{Step 1} and \emph{Step 2}, a ROS action interface has been designed. The action interface implementation is explained in detail in the Section \ref{sec:ros_action}.	
 
-Using as frame of reference the target's center, the coordinates of the target's corners (in 3D coordinates in meters) can be computed, since the dimensions of the target are know. Using the desired pose, the corner coordinates are transformed to the camera frame (3D coordinates in meters) and projected into the image plane (2D coordinates in pixels). With the pixel information, the desired image moment features can be computed as described in TODO so the $\bm{s}^\ast$ vector is obtained.
+The target used is an AprilTag (see Section \ref{sec:apriltag_markers}), a squared marker placed on the ground. Several markers can be present in the scene and the user must be able to select them. This feature is useful for a manipulator, since different targets may me necessary for its task. In a similar way, the user must be able of specifying the desired pose, so it can vary depending on the task to be conducted.
+
+For \emph{Step 3}, the target's corners (3D coordinates in meters w.r.t. the object frame $O$) can be obtained, since the dimensions of the target are know. Using the desired pose, the corner coordinates are transformed to the camera frame $C$ (3D coordinates in meters) and projected into the image plane (2D coordinates w.r.t. the camera frame $C$ in pixels). With the pixel information, the desired image moment features are computed as described in Section \ref{sec:image-moments} so the $\bm{s}^\ast$ vector is obtained. Here the desired area of the target and the desired centroid coordinates are used as features.
  
-Using the camera current image, the target is detected. Once the desired target is detected its corner's coordinates are obtained already in the image plane (in pixels), so the current vector image moment features $\bm{s}$ can also be computed. The rotation of the target can be also computed from the corner's coordinates as
+Using the current image, the target is detected thanks to the detector described in Section \ref{sec:apriltag_markers}, so \emph{Step 4} is satisfied.
+ 
+Once the desired target is detected its corner's coordinates are obtained already in the image plane (2D coordinates in pixels w.r.t. the camera frame $C$), so the current vector image moment features $\bm{s}$ can also be computed for \emph{Step 5}.
+
+For \emph{Step 6}, the feature difference is computed as the subtraction $\bm{s} - \bm{s}^\ast$ and is given as feedback tanks to the action interface. The iteration matrices necessary for \emph{Step 7} were presented in Section \ref{sec:image-moments}.
+
+The yaw rotation of the aerial robot is controlled by means of a proportional controller. The rotation of the target can be also computed (\emph{Step 10}) from the corner's coordinates as
 
 \begin{equation}
  \theta_z = \arctan \left( \frac{tr_i - tl_i}{tr_j - tl_j} \right) 
 \end{equation}
  
- Once the feature vectors have been computed, the control error can be obtained as $\bm{e} = \bm{s} - \bm{s}^\ast$ and together with $\theta_z$ are used to compute the control velocities as described in Section \ref{sec:vs-algorithm-description}.
+ Once the feature vectors have been computed, the control error can be obtained as $\bm{e} = \bm{s} - \bm{s}^\ast$ and together with $\theta_z$ are used to compute the control velocities (\emph{Step 8} and \emph{Step 11}) as described in Section \ref{sec:vs-algorithm-description}.
  
- The camera velocities are transformed to the robot frame following the procedure explained in Section TODO and used as input for the low level controller of the robot. 
+ The camera velocities are transformed to the robot frame \emph{Step 9} following the procedure explained in Section TODO and used as input for the low level controller of the robot.
 	
 \begin{figure}[!htb]
 		\caption{Interaction between the IBVS controller and the low-level controllers}
@@ -57,6 +65,18 @@ Using the camera current image, the target is detected. Once the desired target 
 	\includegraphics[width=0.5\textwidth]{content/chapter_04/images/context_diagram.pdf}
 	\label{fig:low-level-ibvs}
 \end{figure}
+
+Putting all together, when the aerial robot simulation is started the action server for the visual servoing task is started. The robot can carry out any other mission, such as navigate to the target's position. Once the target is in the field of vision of the robot, the action client can be started. A desired pose with respect to the target is commanded and the client sends the goal to the server. The server receives the goal and creates a new visual servoing task for it. The desired features are computed taking into account the desired pose and the detector keeps tracking the AprilTag to get its corners and compute the current visual features. The visual feature difference is used as error for a proportional controller, which computes the required camera velocity to get an exponential decrease of the error. The computed velocities are transformed to into the robot frame and published to the low-level control velocity command. The low level control imposes this velocities on the robot while maintaining its stability. When a certain tolerance is reached, the robot is stopped and the client is notified about the final result and then shuts down. The robot is now able to start other mission and the visual servo controller available for a new request.
+
+The visual servoing control of the robot requires then three components:
+
+\begin{itemize}
+	\item The \emph{low-level} controllers of the aerial robot.
+	
+	\item The visual servoing controller implemented within the \emph{action interface}.
+	
+	\item The \emph{client} that uses the action interface to set a new visual servoing task.
+\end{itemize}
 
 \section{Visual Servoing Algorithm Description}
 \label{sec:vs-algorithm-description}
@@ -71,7 +91,9 @@ x_n = a_n x_g \\
  y_n = a_n y_g 
 \end{equation*}
 
-Where $a$ is the area of the object in the image (given in pixels), $\left( x_g , y_g \right) $ are its centroid coordinates (given in pixels), $a^\ast$ the desired area, and $Z^\ast$ the desired depth between the camera and the target (given in meters). The normalization of the initial quantities leads to a better numerical stability in the computation of the interaction matrix, as noted in Section TODO. The relationship between the relative motion of the camera and the object and the feature kinematics is given by
+Where $a$ is the area of the object in the image (given in pixels), $\left( x_g , y_g \right) $ are its centroid coordinates (given in pixels), $a^\ast$ the desired area, and $Z^\ast$ the desired depth between the camera and the target (given in meters). The normalization of the initial quantities leads to a better numerical stability in the computation of the interaction matrix, as noted in Section \ref{sec:image-moments}.
+
+The relationship between the relative motion of the camera and the object and the feature kinematics is given by
 
 \begin{equation}
 \dot{\bm{s}} = \bm{L_v} \bm{v} + \bm{L_\omega} \bm{\omega}
@@ -87,7 +109,10 @@ As already mentioned in Section \ref{sec:vs-theory}, linear exponential stabilit
 
 Generally, the interaction terms $\bm{L_v}$ and $\bm{L_\omega}$ depend nonlinearly on the state of the system and cannot be reconstructed exactly from the observed visual data. To cope with this situation the system can be linearized around an equilibrium position.
 
-For an aerial robot where the camera is pointing downwards towards the target object, it is possible to approximate $\bm{L_v} \approx - \bm{I}_3$, since the camera image plane is parallel to the target plane. Furthermore, the motion of the robot is smooth and slow, so the value of $\bm{L_\omega} \bm{\omega}$ is small compared with the error $\lambda \bm{e}$. As a result, the following approximation is valid
+For an aerial robot where the camera is pointing downwards towards the target object, it is possible to approximate $\bm{L_v} \approx - \bm{I}_3$, since the camera image plane is parallel to the target plane. Furthermore, the motion of the robot is smooth and slow, so the value of $\bm{L_\omega} \bm{\omega}$ is small compared with the error $\lambda \bm{e}$. 
+
+
+The convenience of the selected features lays on the decoupling for the control of the degrees of freedom, i.e. each feature is used to compute a different degree of freedom. For a planar object which remains parallel to the image plane, its centroid's coordinates allow the control of the velocities in this. While the area of the object is used to control the perpendicular distance between the object plane and the image plane. As a result, the following approximation is valid
 
 \begin{equation}
 \bm{v} = \lambda \bm{e} \text{ with } \lambda > 0
