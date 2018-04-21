@@ -7,7 +7,7 @@
 
 In this chapter, the implementation details of the system previously described are given.
 
-All the elements of the system have been implemented as ROS components using the C++ API. The code is organized as a stack called \texttt{flypulator\_vs} and composed of five ROS packages described below. All the source code is available on GitHub\footnote{\url{https://github.com/PabloRdrRbl/flypulator_vs}} under an GPLv3 license\footnote{\url{https://github.com/PabloRdrRbl/flypulator_vs/blob/master/LICENSE}}. The content of each of the following ROS packages is the following:
+All the elements of the system have been implemented as ROS components using its C++ API. The code is organized as a stack called \texttt{flypulator\_vs} and composed of five ROS packages described below. All the source code is available on GitHub\footnote{\url{https://github.com/PabloRdrRbl/flypulator_vs}} under a GPLv3 license\footnote{\url{https://github.com/PabloRdrRbl/flypulator_vs/blob/master/LICENSE}}. The content of each of the following ROS packages is the following:
 
 \nomenclature[ba]{API}{Application Programming Interface}
 
@@ -18,7 +18,7 @@ All the elements of the system have been implemented as ROS components using the
 	
 	\item \texttt{flypulator\_vs\_gazebo}: Contains the URDF files for the markers and the world used during the simulation.
 	
-	\item \texttt{flypulator\_vs\_msgs}: Contains the description of the action server.
+	\item \texttt{flypulator\_vs\_msgs}: Contains the descriptor of the action interface.
 	
 	\item \texttt{flypulator\_vs\_task}: Contains the action client for the visual servo controller. The node is used to get the user input for the selection of the desired marker and pose. The desired pose is specified in a text file, while the desired marker is selected by the user by clicking on one of the currently available makers in the camera image. The user input is published so the action server can receive it.
 \end{itemize}
@@ -34,7 +34,7 @@ In the following sections, the most relevant aspects of the implementation are d
 	
 	\item How is the visual servoing algorithm implemented?
 	
-	\item How the system integrated as a ROS component?
+	\item How is the system integrated as a ROS component?
 \end{itemize}
 
 
@@ -138,8 +138,15 @@ In this section, the action\footnote{\url{http://wiki.ros.org/actionlib}} interf
 
 The action interface comprises two agents, the action client and the action server. The action server is always running, waiting for the client to send a new task (a new \emph{action}).
 
-An action \cite{ROS_ComPat} is an abstraction of a discrete behavior that moves the robot or runs for a longer time but producing feedback during the execution. Examples of possible actions are moving the arm of a robot to a certain pose, point the head of a robot into a desired point or perform a laser scan. In this case, the action is placing the aerial robot into the desired posed with respect to the target using a visual servoing algorithm.
+An action \cite{ROS_ComPat} is an abstraction of a discrete behavior that moves the robot or runs for a longer time but producing feedback during the execution. Examples of possible actions are moving the arm of a robot to a certain pose, pointing the head of a robot into a desired point or performing a laser scan. In this case, the action is placing the aerial robot into the desired pose with respect to the target using a visual servoing algorithm.
 
- Each action is defined by three elements if form of messages on which the server and client communicate: the \emph{goal}, \emph{feedback} and \emph{result}. These messages are created in de \emph{action descriptor}. The action descriptor for the IBVS action is placed in the package \texttt{flypulator\_vs\_msgs} withing the directory \texttt{action} in a file called \texttt{AprilTagIBVS.action} (see Listing \ref{AprilTagIBVS}).
+ Each action is defined by three elements if form of messages on which the server and client communicate: the \emph{goal}, \emph{feedback} and \emph{result}. These messages are created in de \emph{action descriptor}. The action descriptor for the IBVS action is placed in the package \texttt{flypulator\_vs\_msgs} within the directory \texttt{action} in a file called \texttt{AprilTagIBVS.action} (see Listing \ref{AprilTagIBVS}).
 
 \ifalisting{Action descriptor for the IBVS task}{AprilTagIBVS}{C++}{none}{content/chapter_05/listings/AprilTagIBVS.action}{true}
+
+\begin{figure}[!htb]
+	\caption{Basic architecture of the implemented action interface}
+	\centering
+	\includegraphics[width=\textwidth]{content/chapter_05/images/action_interface.pdf}
+	\label{fig:action_interface}
+\end{figure}
