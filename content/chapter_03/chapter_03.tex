@@ -72,13 +72,13 @@ The functional requirements describe what the system must do to complete the ove
 	
 	\item \textbf{F3}: \emph{Compute feature difference}. Compute the difference between the current feature vector and the desired feature vector to be used as error for the control law.		
 	
-	\item \textbf{F4}: \emph{Provide control input for the low level controller}. Control input based on image data so that the aerial robot achieves the desired pose with respect to the target.Velocity control based on the error between current and desired image features, no pose estimation.
+	\item \textbf{F4}: \emph{Provide velocity commands to the low level controller}. Control input based on image data so that the aerial robot achieves the desired pose with respect to the target.Velocity control based on the error between current and desired image features, no pose estimation.
 	
 	\item \textbf{F5}: \emph{Provide feedback to the user and terminate the visual servoing task}. The system must be able to tell the user whether the target pose has been already achieved or not, by publishing the current error of the controller. Once the desired pose has been achieved, it must notify the user and disconnect from the robot.
 \end{itemize}
 
 %%%%%%%%%%
-\subsection{Other Requirements}
+\subsection{Qualitative Requirements}
 \label{sec:other-requirements}
 %%%%%%%%%%
 
@@ -107,12 +107,14 @@ The functional requirements describe what the system must do to complete the ove
 
 \nomenclature[ba]{OS}{Operative System}
 
+\pagebreak
+
 %%%%%%%%%%
 \section{Structured Analysis}
 \label{sec:sa}
 %%%%%%%%%%
 
-The Structured Analysis \cite{Janschek2011} is a formal method to describe relationships of functional type in complex processes. In order to do that, it views the system from the perspective of data flowing through it. The Structured Analysis is a top-down model, meaning that it analyses the system data flows through successive decomposition. The result of the Structured Analysis of a system is a set graphical diagrams representing the different processes or functions applied to the data and the outputs stored by the system.
+The \emph{Structured Analysis} \cite{Janschek2011} is a formal method to describe relationships of functional type in complex processes. In order to do that, it views the system from the perspective of data flowing through it. The Structured Analysis is a top-down model, meaning that it analyses the system data flows through successive decomposition. The result of the Structured Analysis of a system is a set graphical diagrams representing the different processes or functions applied to the data and the outputs stored by the system.
 
 % TODO: Continue with next paragraph:
 
@@ -123,66 +125,66 @@ The Structured Analysis \cite{Janschek2011} is a formal method to describe relat
 \label{sec:context-diagram}
 %%%%%%%%%%
 
-The context diagram shows the interfaces between the system developed in this work and its environment.
+The \emph{Context Diagram} shows the interfaces between the system developed in this work and its environment.
 
 \begin{figure}[h]
-	\centering
-	\includegraphics[width=0.8\textwidth]{content/chapter_03/images/sa_diagram_01.pdf}
 	\caption{Context Diagram}
 	\label{fig:sa_diag_01}
+	\centering
+	\includegraphics[width=0.8\textwidth]{content/chapter_03/images/sa_diagram_01.pdf}
 \end{figure}
-
-\pagebreak
 
 %%%%%%%%%%
 \subsection{Level A: IBVS Controller}
 \label{sec:level-A}
 %%%%%%%%%%
 
-Level A is the first level below the context diagram and contains the main functions (defined in Section \ref{sec:functional-requirements} as F1, F2, F3, F4 and F5) of the system developed, the \textit{IBVS Controller}. In Figure \ref{fig:sa_diag_02} a Data Flow Diagram (DFD) is used to describe the interaction between data and processes. A Data Flow Diagram \cite{Janschek2011} is a decomposition of the system developed resultant of the subjective perspective of the design engineer about it.
+Level A is the first level below the context diagram and contains the main functions (defined in Section \ref{sec:functional-requirements} as F1, F2, F3, F4 and F5) of the system developed, the \textit{IBVS Controller Server}. In Figure \ref{fig:sa_diag_02} a \emph{Data Flow Diagram} (DFD) is used to describe the interaction between data and processes. A Data Flow Diagram \cite{Janschek2011} is a decomposition of the system developed resultant of the subjective perspective of the design engineer about it.
 
 \nomenclature[ba]{DFD}{Data Flow Diagram}
 \nomenclature[ba]{DD}{Data Dictionary}
 
 \begin{figure}[!htb]
-	\centering
-	\includegraphics[width=\textwidth]{content/chapter_03/images/sa_diagram_02.pdf}
 	\caption{Data Flow Diagram - Level A}
 	\label{fig:sa_diag_02}
+	\centering
+	\includegraphics[width=\textwidth]{content/chapter_03/images/sa_diagram_02.pdf}
 \end{figure}
 
 \pagebreak
 
-Table \ref{tab:DD-LA} contains the Data Dictionary for the DFD of Level A. The Data Dictionary \cite{Janschek2011} is a detailed representation of all data flows involved in a Data Flow Diagram. Where $D = \text{data flow}$ and $C = \text{control flow}$.
+Table \ref{tab:DD-LA} contains the \emph{Data Dictionary} (DD) for the DFD of Level A. The Data Dictionary \cite{Janschek2011} is a detailed representation of all data flows involved in a Data Flow Diagram. Where $D = \text{data flow}$ and $C = \text{control flow}$.
 
 \begin{table*}[!htb]
+	\caption{Data Dictionary for Level A}
+	\label{tab:DD-LA}
 	\centering
 	\begin{tabular}{lll}
 		\toprule
 		Flow & Type & Description \\
 		\midrule
-		D0.1 & C & User input to start or stop the system \\
-		D0.2 & D & User defined desired pose w.r.t. the target \\
+		C0.1 & C & User input to start or stop the system \\
+		C0.2 & C & Information about pose achieved or not \\
+		D0.1 & D & User defined desired target ID \\
+		D0.2 & D & User defined desired camera pose w.r.t. the target \\
 		D0.3 & D & Camera image data \\
 		D0.4 & D & Camera information (sensor data, camera model, etc.) \\
-		D0.5 & D & Velocity control inputs in camera robot's bod \\
-		D0.6 & C & Information about pose achieved or not \\
-		D0.7 & D & System status presented to the user \\
+		D0.5 & D & Velocity commands in the $E$ frame \\
+		D0.6 & D & System status \\
 		\midrule
 		DA.1 & D & Feature vector for desired pose \\
-		DA.2 & D & Current feature vector from camera image data \\
-		DA.3 & D & Features error vector used for control law \\
+		DA.2 & D & Feature vector from current camera image data \\
+		DA.3 & D & Features difference vector used for control law \\
 		DA.4 & D & System status from process F1 \\
 		DA.5 & D & System status from process F2 \\
 		DA.6 & D & System status from process F3 \\
+		DA.7 & D & System status from process F4 \\
 		\midrule
 		S1 & Datastore & Desired feature vector \\
 		S2 & Datastore & Current feature vector \\
-		S3 & Datastore & Feature error vector \\
+		S3 & Datastore & Feature difference vector \\
 		\bottomrule
 	\end{tabular}
-\caption{Data Dictionary for Level A}
-\label{tab:DD-LA}
 \end{table*}
 
 \pagebreak
@@ -197,10 +199,10 @@ Table \ref{tab:DD-LA} contains the Data Dictionary for the DFD of Level A. The D
 Figure \ref{fig:sa_diag_03} contains the Data Flow Diagram that describes the inner work of the process \textit{F1: Compute desired visual features}.
 
 \begin{figure}[!htb]
-	\centering
-	\includegraphics[width=0.9\textwidth]{content/chapter_03/images/sa_diagram_03.pdf}
 	\caption{Data Flow Diagram - Level B1}
 	\label{fig:sa_diag_03}
+	\centering
+	\includegraphics[width=0.8\textwidth]{content/chapter_03/images/sa_diagram_03.pdf}
 \end{figure}
 
 \pagebreak
@@ -213,26 +215,26 @@ Figure \ref{fig:sa_diag_03} contains the Data Flow Diagram that describes the in
 Figure \ref{fig:sa_diag_04} contains the Data Flow Diagram that describes the inner work of the process \textit{F2: Compute current visual features}.
 
 \begin{figure}[!htb]
-	\centering
-	\includegraphics[width=0.9\textwidth]{content/chapter_03/images/sa_diagram_04.pdf}
 	\caption{Data Flow Diagram - Level B2}
 	\label{fig:sa_diag_04}
+	\centering
+	\includegraphics[width=0.8\textwidth]{content/chapter_03/images/sa_diagram_04.pdf}
 \end{figure}
 
 \pagebreak
 
 %%%%%%%%%%
-\subsection{Level B4: Compute Control Law}
+\subsection{Level B3: Compute Control Law}
 \label{sec:level-B3}
 %%%%%%%%%%
 
 Figure \ref{fig:sa_diag_05} contains the Data Flow Diagram that describes the inner work of the process \textit{F4: Compute control law}.
 
 \begin{figure}[!htb]
+	\caption{Data Flow Diagram - Level B3}
+	\label{fig:sa_diag_05}
 	\centering
 	\includegraphics[width=\textwidth]{content/chapter_03/images/sa_diagram_05.pdf}
-	\caption{Data Flow Diagram - Level B4}
-	\label{fig:sa_diag_05}
 \end{figure}
 
 \pagebreak
@@ -245,23 +247,21 @@ Figure \ref{fig:sa_diag_05} contains the Data Flow Diagram that describes the in
 		\toprule
 		Flow & Type & Description \\
 		\midrule
-		DB1.1 & D & Vector containing the desired centroid coordinates for each blob\\
-		DB1.2 & D & Desired polygon formed by the blobs \\
+		DB1.1 & D & Desired corners' coordinates in the image plane\\
+		DB1.2 & D & Desired polygon object \\
 		DB1.3 & D & Desired polygon area \\
-		DB1.4 & D & Desired polygon centroid coordinates\\
-		DB1.5 & D & Desired polygon orientation angle \\
-		DB1.6 & D & System status from process F1.1 \\
-		DB1.7 & D & System status from process F1.2 \\
-		DB1.8 & D & System status from process F1.3 \\
-		DB1.9 & D & System status from process F1.4 \\
-		DB1.10 & D & System status from process F1.5 \\
-		DB1.11 & D & System status from process F1.6 \\
+		DB1.4 & D & Desired polygon centroid coordinates in the image plane \\
+		DB1.5 & D & System status from process F1.1 \\
+		DB1.6 & D & System status from process F1.2 \\
+		DB1.7 & D & System status from process F1.3 \\
+		DB1.8 & D & System status from process F1.4 \\
+		DB1.9 & D & System status from process F1.5 \\
 		\midrule
-		DB2.1 & D & Vector containing the data from each of the detected blobs \\
-		DB2.2 & D & Current polygon \\
+		DB2.1 & D & Marker corners' coordinates in the image plane \\
+		DB2.2 & D & Current polygon object \\
 		DB2.3 & D & Current area of the polygon \\
-		DB3.4 & D & Current polygon centroid coordinates \\
-		DB2.5 & D & Current polygon orientation angle \\
+		DB3.4 & D & Current polygon centroid coordinates in the image plane \\
+		DB2.5 & D & Current angle of orientation of the target \\
 		DB2.6 & D & System status from process F2.1 \\
 		DB2.7 & D & System status from process F2.2 \\
 		DB2.8 & D & System status from process F2.3 \\
@@ -269,8 +269,8 @@ Figure \ref{fig:sa_diag_05} contains the Data Flow Diagram that describes the in
 		DB2.10 & D & System status from process F2.5 \\
 		DB2.11 & D & System status from process F2.6 \\
 		\midrule
-		DB4.1 & D & Visual Servoing interaction matrix \\
-		DB4.2 & D & Pseudo-inverted Visual Servoing interaction matrix \\
+		DB4.1 & D & Visual servoing interaction matrix \\
+		DB4.2 & D & Pseudo-inverted visual servoing interaction matrix \\
 		DB4.3 & D & Control gain $\lambda$ \\
 		DB4.4 & D & Velocity control inputs in camera frame \\
 		DB4.5 & D & System status from process F4.1 \\
@@ -283,67 +283,27 @@ Figure \ref{fig:sa_diag_05} contains the Data Flow Diagram that describes the in
 \end{table*}
 
 \begin{table*}[!h]
+	\caption{Datastore Dictionary for Level B}
+	\label{tab:DD-LB-b}
 	\centering
 	\begin{tabular}{lll}
 		\toprule
 		Flow & Type & Description \\
 		\midrule
-		S1.1 & Datastore & Fixed frame to desired pose homogeneous transformation \\
-		S1.2 & Datastore & Desired centroid coordinates for each blob \\
-		S1.3 & Datastore & Desired target polygon \\
-		S1.4 & Datastore & Desired polygon area \\
-		S1.5 & Datastore & Desired polygon centroid coordinates \\
-		S1.6 & Datastore & Desired polygon orientation angle \\
-		S2.1 & Datastore & Blob edges, gray level and centroid coordinates \\
-		S2.2 & Datastore & Current target polygon  \\
+		S1.1 & Datastore & Target marker ID \\
+		S1.2 & Datastore & geometry\_msgs/Pose of frame $C$ w.r.t. frame $O$ \\
+		S1.3 & Datastore & Coordinates of the desired marker's corners in the image plane \\
+		S1.4 & Datastore & Desired polygon object \\
+		S1.5 & Datastore & Desired polygon area \\
+		S1.6 & Datastore & Desired polygon centroid coordinates in the image plane \\
+		S2.1 & Datastore & Marker corners' coordinates in the image plane \\
+		S2.2 & Datastore & Current target polygon object  \\
 		S2.3 & Datastore & Current polygon area \\
-		S2.4 & Datastore & Current polygon centroid coordinates \\
+		S2.4 & Datastore & Current polygon centroid coordinates in the image plane \\
 		S2.5 & Datastore & Current polygon orientation angle \\	
 		S4.1 & Datastore & Visual servoing interaction matrix \\	
 		S4.2 & Datastore & Pseudo-inverted Visual Servoing interaction matrix \\
 		S4.3 & Datastore & Control gain $\lambda$ \\
 		\bottomrule
 	\end{tabular}
-	\caption{Datastore Dictionary for Level B}
-	\label{tab:DD-LB-b}
-\end{table*}
-
-\pagebreak
-
-%%%%%%%%%%
-\subsection{Level C1: Blob Detection and Tracking}
-\label{sec:level-C1}
-%%%%%%%%%%
-
-Figure \ref{fig:sa_diag_06} contains the Data Flow Diagram that describes the inner work of the process \textit{F2.1: Blob detection and tracking}.
-
-\begin{figure}[!htb]
-	\centering
-	\includegraphics[width=\textwidth]{content/chapter_03/images/sa_diagram_06.pdf}
-	\caption{Data Flow Diagram - Level C1}
-	\label{fig:sa_diag_06}
-\end{figure}
-
-\begin{table*}[!htb]
-	\centering
-	\begin{tabular}{lll}
-		\toprule
-		Flow & Type & Description \\
-		\midrule
-		DC1.1a & D & Parameters of the initial blob \\
-		DC1.2a & D & Vector containing the detected blobs \\
-		DC1.3a & D & Vector containing the parameters of the detected blobs \\
-		DC1.4a & D & Parameters of the initial blob \\
-		DC1.5a & D & System status from process F2.1.1 \\
-		DC1.6a & D & System status from process F2.1.2 \\
-		DC1.7a & D & System status from process F2.1.3 \\
-		DC1.8a & D & System status from process F2.1.4 \\
-		\midrule
-		S2.1.1 & Datastore & Blob edges, gray level and centroid coordinates \\
-		S2.1.2 & Datastore & Blob edges, gray level and centroid coordinates \\
-		S2.1.3 & Datastore & Blob centroid coordinates and area \\
-		\bottomrule
-	\end{tabular}
-	\caption{Data Dictionary for Level C}
-	\label{tab:DD-LC}
 \end{table*}

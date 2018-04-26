@@ -1,6 +1,20 @@
 %!TEX root = ../../thesis_master.tex
 
 %%%%%%%%%%
-\chapter{Future Work}
-\label{chap:future-work}
+\chapter{Conclusions}
+\label{chap:conclusions}
 %%%%%%%%%%
+
+In this thesis, the system development of a Image Based Visual Servoing controller to control the translational and yaw degrees of freedom of an aerial robot has been described through all its phases. 
+
+The process started with a review of the theoretical background of a IBVS controller and an analysis of similar systems. Since the final goal of the system is to work in aerial manipulation, the use of visual servoing in aerial manipulators was also covered in this part.
+
+In the requirements specification and system analysis, the project goals and objectives where translated into fix requirements for a later implementation. After at this stage, the desired system was defined and the next step would be design all the system components so that such requirements were satisfied.
+
+Within the system design the concrete strategies and algorithms to achieve the imposed requirements where analyzed an developed. The target was chosen to be an AprilTag, whose corners can be detected reliably and form an square. Based on this information, the centroid of the target, its area and orientation where selected as visual features. Under the assumption of smooth maneuvers, it can be said that the image plane is always parallel to the target. Thanks to this property, the relationship between the image features and the camera velocities is decoupled. Making possible to control each of the velocities with one of the selected features.
+
+The difference between the desired and current features is used as error for a PID controller. A PID controller computes the velocities that make the error zero and ensures an adequate system performance. The desired camera velocities are transformed to the body frame of the aerial robot and commanded to the low-level controllers. When the robot moves, the new image provides a new set of features, closing the loop.
+
+During the implementation phase, the designed system was materialized through its implementation as a ROS component so it can interact with the rest of the robot. The visual servo controller was implemented as a ROS action interface. This allows to divide the servoing task in a client and a server. The server runs the controller itself, computing the visual features and the correspondent camera velocities, while the client is used to set a new task goal (i.e. an AprilTag maker ID and desired pose)  and waits for the server to finish. The system to detect several markers at the same time and use the one provided by the user. When the marker goes out of the field of view of the camera, a simple algorithm tries to go back towards the lost target.
+
+Finally, the performance of the controller was tested, achieving the desired behavior and achieving convergence to the desired pose in ten to twenty seconds.

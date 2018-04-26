@@ -1,0 +1,22 @@
+%!TEX root = ../../thesis_master.tex
+
+%%%%%%%%%%
+\chapter{Future Work}
+\label{chap:future-work}
+%%%%%%%%%%
+
+The present work is part of the Flypulator project at the Institute of Automation Engineering of the Technische Universität Dresden. This aerial robot is going to be a fully-actuated hexarotor equipped with a multi-degree of freedom serial actuator, which will be used for aerial manipulation tasks.
+
+The controller developed allows only the control of the translational and yaw degrees of freedom, so the next natural step would be to take into account the serial manipulator in the visual servoing task.
+
+Due to this nature, taking into account the dynamic behavior of the aerial vehicle during strong maneuvers may not be important. Since aerial manipulations does not usually require them. However, due to the presence of the serial actuator arm, it would be recommended to consider its dynamics during the visual servoing . In this way the arm position can be controlled to minimize disturbances.
+
+Partitioned control should be implemented to apply visual servoing for the control of the mobile platform and the arm. So depending on the distance to the target the camera velocities are applied using the mobile platform of moving the serial manipulator.
+
+The current standard in visual servoing for aerial manipulators is a 4DOF plaform with a 6DOF arm. The weighted Jacobian matrix approach is combined with a priority task scheduler to take advantage of the over-actuation of the system and choose the degrees of freedom taking into account secondary task such as collision avoidance and joint limit reaching prevention.
+
+Maintaining the camera on-board (eye-on-board) pointing to the end-effector would have the advantage of using the same camera also for visual flow. Otherwise, the camera could be placed in the end-effector to achieve a pure eye-in-hand configuration.
+
+In order to achieve the control of six degrees of freedom, new visual features should be applied. Virtual random 3D point clouds with respect to an AprilTag of similar AR markers is the current strategy in all the aerial manipulators.
+
+Using model based tracking could be used instead of markers, so the only think necessary to carry the visual servoing task would be the CAD model of the object to be manipulated. Allowing an easier interaction of the robot with the environment.

@@ -8,16 +8,14 @@
 \section{Reference Frames}
 \label{sec:reference-frames}
 
-Throughout this work, different frames of reference are used to indicate the pose of the robot or the position of some point in space. In this section the different that will be used in the rest of the text are presented.
+Throughout this work, different frames of reference are used to indicate the pose of the robot or the position of some point in space or in the image. In this section, the different reference frames that will be used in the rest of the text are presented.
 
 \begin{figure}[ht]
 	\caption{Reference frames used in this work}
 	\centering
-	\includegraphics[keepaspectratio, width=10cm]{content/chapter_02/images/frames.png}
+	\includegraphics[keepaspectratio, width=15cm]{content/chapter_02/images/frames.png}
 	\label{fig:ref_frames}
 \end{figure}
-
-\pagebreak
 
 \begin{itemize}
 	\item \emph{Inertial frame} ($I$). Coincident with the Gazebo's \texttt{world} frame.
@@ -26,12 +24,19 @@ Throughout this work, different frames of reference are used to indicate the pos
 	
 	\item \emph{Camera frame} ($C$). Centered in the camera center with the $x$-axis pointing right in the image and the y-axis pointing downwards in the image. As a result, the $z$-axis points where the camera is pointing, in this case downwards. Coincident with the \texttt{downward\_cam\_optical\_frame} frame.
 	
+	\item \emph{Image plane} ($P$). Corresponds to the perspective projection of a physical point in the camera sensor following the pinhole camera model. The origin of this frame is in the top-left corner of the image, the $x$-axis points right and the $y$-axis points downwards. See also Figure \ref{fig:image_plane}
+	
 	\item \emph{Tag frame} ($T$). Centered in the tag center with the $x$-axis pointing upwards in the image and the y-axis pointing right in the image. See also Figure \ref{fig:april-frames}.
 	
 	\item \emph{Object frame} ($O$). Centered in the tag center with$x$-axis pointing right in the image and the y-axis pointing downwards in the image.
 \end{itemize}
 
-% TODO: add image plane
+\begin{figure}[ht]
+	\caption{Camera image plane reference frame}
+	\centering
+	\includegraphics[keepaspectratio, width=6cm]{content/chapter_02/images/image_plane.png}
+	\label{fig:image_plane}
+\end{figure}
 
 \section{Visual Servoing Theoretical Basics}
 \label{sec:vs-theory}
@@ -114,13 +119,6 @@ y = Y/Z = (v - c_v) / f
 
 where $\bm{m} = (u, v)$ gives the coordinates of the image point in pixel units, and $\bm{a} = (c_u, c_v, f, \alpha)$ is the set of camera intrinsic parameters: $c_u$ and $c_v$ are the coordinates of the principal point, $f$ is the focal length, and $\alpha$ is the ratio of the pixel dimensions. For a feature point: $\bm{s} = \bm{x} = (x, y)$.
 
-\begin{figure}[ht]
-	\centering
-	\includegraphics[keepaspectratio, width=9cm]{content/chapter_02/images/pinhole_camera.png}
-	\caption{Pinhole camera model}
-	\label{fig:pin-hole}
-\end{figure}
-
 Taking the time derivative of the projection Equation \ref{eq:vs-th-6}, we obtain
 
 \begin{equation}
@@ -179,13 +177,13 @@ When the current depth $Z$ of each point is known, there is no need of approxima
 
 A second alternative is to use $\widehat{\bm{L_e}^+} = \bm{L_{e^\ast}}^+$, where $\bm{L_{e^\ast}}$ is the value of $\bm{L_{e}}$ for the desired position ($\bm{e} = \bm{e}^\ast = 0$) (see \cite{espiau_1992}). Here, the depth parameter only needs to be estimated once for every point.
 
-\subsection{Pinhole Camera Model}
-
-The basic idea of a photographic camera is placing a film in front of an object so it records the reflected light on this object, obtaining a representation of the object thanks to the projection of each of the points of the object into the film.
-
-Instead of placing just the film, a barrier is placed between it and the object leaving only a small opening (pinhole) so it blocks most of the rays reducing blurring. This small hole on the barrier is called aperture. The aperture acts as the center of the camera and the distance between the image plane (the film) and the pinhole is known as focal length.
-
-The image formation is driven by the projective geometry. In this kind of geometry, straight lines are also straight in the image and the parallel lines in the 3D space world intersect in the image at the so-called vanishing point.
+%\subsection{Pinhole Camera Model}
+%
+%The basic idea of a photographic camera is placing a film in front of an object so it records the reflected light on this object, obtaining a representation of the object thanks to the projection of each of the points of the object into the film.
+%
+%Instead of placing just the film, a barrier is placed between it and the object leaving only a small opening (pinhole) so it blocks most of the rays reducing blurring. This small hole on the barrier is called aperture. The aperture acts as the center of the camera and the distance between the image plane (the film) and the pinhole is known as focal length.
+%
+%The image formation is driven by the projective geometry. In this kind of geometry, straight lines are also straight in the image and the parallel lines in the 3D space world intersect in the image at the so-called vanishing point.
   
 \subsection{Image Moments as Visual Features}
 \label{sec:image-moments}
@@ -214,11 +212,11 @@ While entered moments are given by
 
 Where for the area $a = m_{00}$ and for the centroid coordinates $\left\lbrace \bar{x_g}, \bar{y_g} \right\rbrace = \left\lbrace m_{10}/m_{00}, m_{01}/m_{00} \right\rbrace $. Any moment defined in this way, is known to be invariant to 2D translational motion. 
 
-Several works \cite{bourquardez_2009} \cite{tahri_2005} introduced the area and centroid coordinates of a target as visual features. For this case, the interaction matrix has the following form \cite{tahri_2005}.
-
-\begin{equation}
-\bm{L}_{x_g} = \begin{bmatrix} -C & 0 & C x_g & \varepsilon_1 & -(1+\varepsilon_2) & y_g \end{bmatrix}
-\end{equation}
+%Several works \cite{bourquardez_2009} \cite{tahri_2005} introduced the area and centroid coordinates of a target as visual features. For this case, the interaction matrix has the following form \cite{tahri_2005}.
+%
+%\begin{equation}
+%\bm{L}_{x_g} = \begin{bmatrix} -C & 0 & C x_g & \varepsilon_1 & -(1+\varepsilon_2) & y_g \end{bmatrix}
+%\end{equation}
 
 In this work, the normalized area and normalized centroid coordinates of a planar target are used as visual features. 
 
@@ -234,7 +232,7 @@ As a result, ROS works as a framework where the user can implement the desired r
 \begin{itemize}
 	\item \emph{Nodes}: Nodes are processes that perform a certain computation. The robotic system is decomposed in functionalities running in each of the in different nodes. For example, one node processes de camera information, other node controls the wheel motors and a third node is responsible of the path planning.
 	
-	\item \emph{Master}:The ROS Master builds and maintains the name registration and lookup of the rest of components of the computation graph, so it allows the identification between nodes to establish the desired communication.
+	\item \emph{Master}: The ROS Master builds and maintains the name registration and lookup of the rest of components of the computation graph, so it allows the identification between nodes to establish the desired communication.
 	
 	\item \emph{Messages}: Messages are the data transfered between nodes. A message is a data structure comprising typed fields. The standard primitive types (integer, float point, boolean, etc.) can be combined in nested structures or arrays.
 	
@@ -245,7 +243,7 @@ As a result, ROS works as a framework where the user can implement the desired r
 	\item \emph{Parameter Server}: The Parameter Server allows data to be stored in a centralized data structure similar to a dictionary, where it can be accessed by any node. 
 \end{itemize}
 
-In the present work, the system designed works as a set of nodes establishing communication between the \emph{action interface} described in the Section TODO, which subscribe to the sensor topics of the robot and publish control command to the command topic of the robot.
+In the present work, the system designed works as a set of nodes establishing communication between the \emph{action interface} described in the Section \ref{sec:ros_action}, which subscribe to the sensor topics of the robot and publish control command to the command topic of the robot.
 
 \section{State of the Art}
 
@@ -270,7 +268,8 @@ To cope with these problems different solutions have been proposed and applied f
 
  In the past, several approaches have been taken to face the problem of depth estimation, such as: partial pose estimation (see \cite{malis_2_1999}), adaptive control (see \cite{Papanikolopoulos}) or estimation of the Jacobian using quasi-Newton methods (see \cite{Piepmeier}). Nowadays, the most frequent approach is the use of a partitioned control that allows the uncoupling of translational and rotational degrees of freedom\footnote{However, it is important to bear in mind that due to the under-actuated dynamics of an usual 4 DOF quadrotor, it is only possible to control the three linear velocities and the yaw (rotational) speed. While the other two rotational speeds, roll and pith, are used to move the thrust vectors of the propellers and thus generate movement on the horizontal plane.}.
  
- \cite{hamel_2002} is one of the pioneering works to cope with the visual servo control of under-actuated systems as a quadrotor. Introduces the idea of controlling the full dynamics of the vehicle. The approach requires separate measurements of linear and angular velocities which are not needed in classical IBVS, since for this case the kinematic velocities are used directly as control variables. In particular the method presented, needs only a single inertial direction. For the case of quadrotors, which usually require hovering applications, this is the vertical axis acceleration, provided by a filtered IMU signal. Due to the rotational ego-motion of the camera, the dynamics of the image point involve the angular velocity as well as the velocity linear velocity of the vehicle. This dependence destroys the explicit triangular cascade structure of rigid body motion expressed in the inertial frame. However, under certain conditions on the camera geometry, it is possible to recover a passivity-like property (from virtual input to the backstepping error) sufficient to apply a backstepping control design for the non-linear dynamical system. The paper the formulates that only image geometry that preserves the passivity-like properties of the body fixed frame dynamics of a rigid object in the image space are those of a spherical camera. Thus, introducing the use of spherical image moments\footnote{To use spherical moments is not necessary to implement physically a spherical camera, just to compute numerically the spherical moments of the image.}.
+ \cite{hamel_2002} is one of the pioneering works to cope with the visual servo control of under-actuated systems as a quadrotor. Introduces the idea of controlling the full dynamics of the vehicle. The approach requires separate measurements of linear and angular velocities which are not needed in classical IBVS, since for this case the kinematic velocities are used directly as control variables. In particular the method presented, needs only a single inertial direction. For the case of quadrotors, which usually require hovering applications, this is the vertical axis acceleration, provided by a filtered IMU signal. Due to the rotational ego-motion of the camera, the dynamics of the image point involve the angular velocity as well as the velocity linear velocity of the vehicle. This dependence destroys the explicit triangular cascade structure of rigid body motion expressed in the inertial frame. However, under certain conditions on the camera geometry, it is possible to recover a passivity-like property (from virtual input to the 
+ ping error) sufficient to apply a backstepping control design for the non-linear dynamical system. The paper the formulates that only image geometry that preserves the passivity-like properties of the body fixed frame dynamics of a rigid object in the image space are those of a spherical camera. Thus, introducing the use of spherical image moments\footnote{To use spherical moments is not necessary to implement physically a spherical camera, just to compute numerically the spherical moments of the image.}.
 
 For serial manipulators, a low-level actuator is usually employed to compensate the dynamic behavior of the system, making possible to control it with velocity commands as a first order system. For a full-dynamics quadrotor model accounting for aggressive maneuvers this is not at all the case, since it is a fourth order system. Thus, other strategies are usually considered to control such a robot (see \cite{Mellinger} for a comprehensive description of the control of the dynamics of a quadrotor and its trajectory generation in space). Already in the basic literature on Visual Servoing (see \cite{chaumette_visual_2007}) the authors suggest that kinematic control may not be enough for the case of aggressive maneuvers. 
 
