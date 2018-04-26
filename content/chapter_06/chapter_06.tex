@@ -20,15 +20,15 @@ In this section, the performance of the proposed control scheme is verified expe
 %%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{enumerate}
-	\item \textbf{Prototype description}. The aerial robot used for the text is a quadrotor. The vehicle is equiped with an IMU that allow its state estimation and feed the low level controllers. Two low-level controllers take care of teh attitude stabillization and the velocity control. The camera used for the visual servoing task is placed on board of the quadrotor and pointg downwards towards the target. The 2D visual information comming from the camera is used as the only input for the visual servo controller running ontop of the low-level controllers. The visual controller sends velocity commands to the velocity controller to control kinematicaly the translational and the yaw degrees of freedom. The velocity commands of the quadrotor are saturated to ensure that it stays in quasi-stationary flight regime. In case that the linear velocity vector is bigger that 0.2 m/s, the vector is scaled to this limit value. For the yaw angular velocity a saturation of 0.2 rad/s, so the vehicle can rotate half-revolution in the usual convergence time.
+	\item \textbf{Prototype description}. The aerial robot used for the test is a quadrotor. The vehicle is equipped with an IMU that allow its state estimation and feed the low level controllers. Two low-level controllers take care of the attitude stabilization and the velocity control. The camera used for the visual servoing task is placed on board of the quadrotor and pointing downwards towards the target. The 2D visual information coming from the camera is used as the only input for the visual servo controller running on top of the low-level controllers. The visual controller sends velocity commands to the velocity controller to control kinetically the translational and the yaw degrees of freedom. The velocity commands of the quadrotor are saturated to ensure that it stays in quasi-stationary flight regime. In case that the linear velocity vector is bigger that 0.2 m/s, the vector is scaled to this limit value. For the yaw angular velocity a saturation of 0.2 rad/s is applied, so the vehicle can rotate half-revolution in the usual convergence time.
 	
-	\item \textbf{Experimental environment}. For the simulation scenario the Gazebo's \texttt{empty\_world} is used. The illummination conditions are the standard conditions of this scenario, the only modification done to it is the target's placement and the robot's respawn. The target is placen in the origin of the \texttt{world} frame. The vehicle is navigated until its initial position using a joystick. The \texttt{tf}\footnote{\url{http://wiki.ros.org/tf}} transformations between the target's frame $T$ and the camera frame $C$ are used to ensure that the intitial pose is always correct.
+	\item \textbf{Experimental environment}. For the simulation scenario the Gazebo's \texttt{empty\_world} is used. The illumination conditions are the standard conditions of this scenario, the only modification done to it is the target's placement and the robot's spawn. The target is placed in the origin of the \texttt{world} frame. The vehicle is navigated until its initial position using a joystick. The \texttt{tf}\footnote{\url{http://wiki.ros.org/tf}} transformations between the target's frame $T$ and the camera frame $C$ are used to ensure that the initial pose is always correct.
 	
-	\item \textbf{Experimental protocol}. Once the robot is in the desired initial condition the action client for the controller is called. The user clicks on the target and the visual servoing starts. The controller publishes the current error through the action interface feedback. Additional data used for the performance evaluation is published using a custom menssage. The robot state used for the validation come from the real robot (simulatio) state that Gazebo publishes into the topic \texttt{/gazebo/model\_states}. All the interesting topics are recorded using\texttt{ rosbag}\footnote{\url{http://wiki.ros.org/rosbag}}. Then, a Python script is used to open the bag file and format the necessary data into comma separated values. The resulting files are porcessed with Python to produce the plots.
+	\item \textbf{Experimental protocol}. Once the robot is in the desired initial condition the action client for the controller is called. The user clicks on the target and the visual servoing starts. The controller publishes the current error through the action interface feedback. Additional data used for the performance evaluation is published using a custom message. The robot state used for the validation come from the real robot (simulation) state that Gazebo publishes into the topic \texttt{/gazebo/model\_states}. All the interesting topics are recorded using\texttt{ rosbag}\footnote{\url{http://wiki.ros.org/rosbag}}. Then, a Python script is used to open the bag file and format the necessary data into comma separated values. The resulting files are processed with Python to produce the plots.
 	
 	The tunning of the PID's gains was conducted in the following form: the proportional gain is increased until convergence is achieved without too much overshoot. Then the integral and proportional gains are adjusted to reduce the oscillations. Empirically, these last gains must be around a hounded times smaller. Since they will work only when the error is very small and only small corrections are necessary.
 	
-	The sampling ration of the high-level visual servoing controller is limited to 20 Hz due to the bottleneck of the computer simulation without GPU. While Gazebo solves the physics ODEs using CPU computing, the camera simulations are run in this other component. In the optimal conditions the computer should be able to run the simulation until achieving a 50 Hz rate. In case of changing this rate, a new PID tuning would be needed.
+	The sampling ratio of the high-level visual servoing controller is limited to 20 Hz due to the bottleneck of the computer simulation without GPU. While Gazebo solves the physics ODEs using CPU computing, the camera simulations are run in this other component. In the optimal conditions the computer should be able to run the simulation until achieving a 50 Hz rate. In case of changing this rate, a new PID tuning would be needed.
 	
 	\nomenclature[ba]{GPU}{Graphics Processing Unit}
 	\nomenclature[ba]{ODE}{Ordinary Differential Equation}
@@ -36,7 +36,7 @@ In this section, the performance of the proposed control scheme is verified expe
 	
 	\item \textbf{Test cases}. Different initial conditions were considered to test the performance in all the possible cases and are presented below. For all the cases, the error convergence criteria used are $10^{-5}$ for the translation error and $5\times 10^{-3}$ for the rotational one.The first was chosen empirically to have millimeter accuracy in the final pose and the second ensures an orientation error of $10^{-4}$ rad $\simeq 0.3$ deg.
 	
-	Noisy camera input conditions were also test. It was founded that since all the feature computation is based on the AprilTag detection, it robustness makes that common camera Gaussian noise conditions ($\mu = 0$ and $\sigma = 0.1$) do not influence the results.
+	Noisy camera input conditions were also tested. It was founded that since all the feature computation is based on the AprilTag detection, its robustness makes that common camera Gaussian noise conditions ($\mu = 0$ and $\sigma = 0.1$) has a negligible influence the results.
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -44,7 +44,7 @@ In this section, the performance of the proposed control scheme is verified expe
 \label{sec:large-initial-displacements}
 %%%%%%%%%%%%%%%%%%%%%%%
 
-For the case of large initial displacements the initial pose was chosen to be $(x, y, z) \simeq (-0.9, -0.5, 2.0)$ m and $(\phi, \theta, \psi) \simeq (0.0, 0.0, 18)$ deg. With desired pose $(x, y, z) \simeq (0.0, 0.0, 1.0)$ m and $(\phi, \theta, \psi) \simeq (0.0, 0.0, 0.0)$ deg (camera hovering over the target at 1 m height of the ground ). The results of this test case are presented in Figure \ref{fig:large-displacements} and identified with different letters form \emph{a} to \emph{f}.
+For the case of large initial displacements the initial pose was chosen to be $(x, y, z) \simeq (-0.9, -0.5, 2.0)$ m and $(\phi, \theta, \psi) \simeq (0.0, 0.0, 18)$ deg. With desired pose $(x_d, y_d, z_d) = (0.0, 0.0, 1.0)$ m and $(\phi_d, \theta_d, \psi_d) = (0.0, 0.0, 0.0)$ deg (camera hovering over the target at 1 m height of the ground). The results of this test case are presented in Figure \ref{fig:large-displacements} and identified with different letters form \emph{a} to \emph{f}.
 
 %Different data has been plotted in the figure:
 %
@@ -60,6 +60,8 @@ Some oscillation still occurs before convergence, but this could be caused by th
 
 The yaw control appears to oscillate a bit in (\emph{c}) the commanded velocities, although (\emph{e}) the achieved yaw angular velocity is very stable. The same happens in (\emph{f}), where the orientation with respect to the target converges exponentially asymptotically to the desired one. The small disturbances in $\phi$ and $\theta$ are due to the changes of speed at the beginning and during convergence. Since they stay small, the assumption of image plane parallel to the target plane is still valid.
 
+Several test cases where run with different large displacements as initial conditions, showing similar results. 
+
 \begin{figure}[!htb]
 	\caption{Visual servo controller test results for large displacements}
 	\centering
@@ -67,12 +69,16 @@ The yaw control appears to oscillate a bit in (\emph{c}) the commanded velocitie
 	\label{fig:large-displacements}
 \end{figure}
 
+\pagebreak
+
 %%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Small Initial Displacements}
 \label{sec:small-initial-displacements}
 %%%%%%%%%%%%%%%%%%%%%%%
 
-For the case of small initial displacements the initial pose was chosen to be $(x, y, z) \simeq (-0.2, 0.2, 1.4)$ m and $(\phi, \theta, \psi) \simeq (0.0, 0.0, 10)$ deg. With desired pose $(x, y, z) \simeq (0.0, 0.0, 1.0)$ m and $(\phi, \theta, \psi) \simeq (0.0, 0.0, 0.0)$ deg (camera hovering over the target at 1 m height of the ground ). The results of this test case are presented in Figure \ref{fig:small-displacements} and identified with different letters form \emph{a} to \emph{f}. The results here are similar to the large displacements case. Convergence time is lower here.
+For the case of small initial displacements the initial pose was chosen to be $(x, y, z) \simeq (-0.2, 0.2, 1.4)$ m and $(\phi, \theta, \psi) \simeq (0.0, 0.0, 10)$ deg. With desired pose $(x_d, y_d, z_d) = (0.0, 0.0, 1.0)$ m and $(\phi_d, \theta_d, \psi_d) = (0.0, 0.0, 0.0)$ deg (camera hovering over the target at 1 m height of the ground ). The results of this test case are presented in Figure \ref{fig:small-displacements} and identified with different letters form \emph{a} to \emph{f}. The results here are similar to the large displacements case. Convergence time is lower here.
+
+Several test cases where run with different small displacements as initial conditions, showing similar results. 
 
 \begin{figure}[!htb]
 	\caption{Visual servo controller test results for small displacements}

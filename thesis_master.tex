@@ -8,9 +8,9 @@
 %**************************************************
 
 \documentclass[
-	% print,      % print optimized version of the thesis, standard option
+	 print,      % print optimized version of the thesis, standard option
                   % alternative:
-	screen,   % makes the thesis better readable on screens (onesided, coloured links)
+	%screen,   % makes the thesis better readable on screens (onesided, coloured links)
                   % use only 'print' OR 'screen'
                   % ATTENTION: 'screen' changes size of text area slightly. Always optimize document WITH
                   % 'print' option first for printing (size of graphics etc.) and convert afterwards
@@ -51,7 +51,7 @@
 \ifaProfessor{Prof. Dr. techn. Klaus Janschek}  % supervising professor as indicated on the topic description
 \ifaDayOfSubmission{27.04.2018}  % the day the thesis is submitted
 \ifaTopicDescriptionPDF{content/Aufgabenstellung.pdf}  % a PDF file of the topic description
-%\ifaAppendix{example_files/appendix}  % a tex file containing the appendix for the thesis
+\ifaAppendix{content/appendix}  % a tex file containing the appendix for the thesis
 
 % Literaturverzeichnis angeben
 \bibliography{bibliography}  % a file containing the reference sources
@@ -84,5 +84,4 @@
 	\input{content/chapter_05/chapter_05.tex}
 	\input{content/chapter_06/chapter_06.tex}
 	\input{content/chapter_07/chapter_07.tex}
-	\input{content/chapter_08/chapter_08.tex}
 \end{document}

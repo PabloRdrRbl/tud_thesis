@@ -25,6 +25,8 @@ All the elements of the system have been implemented as ROS components using its
 
 All the C++ code follows the ROS Style Guide \cite{ROS_Style} and has been conveniently documented using the Doxygen\footnote{\url{http://www.stack.nl/~dimitri/doxygen/}} documentation generator tool.
 
+\pagebreak
+
 In the following sections, the most relevant aspects of the implementation are discussed. These are: 
 
 \begin{itemize}
@@ -70,6 +72,8 @@ For this work, the quadrotor \texttt{hector\_quadrotor}\footnote{\url{http://wik
 \end{itemize}
 
 The \texttt{flypulator\_vs\_gazebo} package contains all launch files to start the Gazebo simulation under the directory \texttt{/launch}. The \texttt{hector\_quadrotor} stack is installed separately and called by the launch file \texttt{start.launch}. Any other robot could be spawned in a similar manner.
+
+\pagebreak
 
 \section{ViSP Visual Servoing Framework}
 \label{sec:visp}
@@ -169,6 +173,8 @@ However, for this work a more complex client was written. When the client launch
 	\includegraphics[width=\textwidth]{content/chapter_05/images/action_interface_rqt.png}
 	\label{fig:action_interface_ros}
 \end{figure}
+
+\pagebreak
 
 \section{Controller Parameter Server}
 \label{sec:parameter_server}

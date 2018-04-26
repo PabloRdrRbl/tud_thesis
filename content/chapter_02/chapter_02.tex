@@ -13,28 +13,30 @@ Throughout this work, different frames of reference are used to indicate the pos
 \begin{figure}[ht]
 	\caption{Reference frames used in this work}
 	\centering
-	\includegraphics[keepaspectratio, width=15cm]{content/chapter_02/images/frames.png}
+	\includegraphics[keepaspectratio, width=10cm]{content/chapter_02/images/frames.png}
 	\label{fig:ref_frames}
 \end{figure}
 
+\pagebreak
+
 \begin{itemize}
-	\item \emph{Inertial frame} ($I$). Coincident with the Gazebo's \texttt{world} frame.
+	\item \emph{Inertial frame} \{$I$\}. Coincident with the Gazebo's \texttt{world} frame.
 	
-	\item \emph{Body frame} ($B$). Coincident with the robot's URDF description \texttt{base\_link} frame. The $x$-axis pointing in the frontal direction of the robot and the $z$-axis pointing upwards.
+	\item \emph{Body frame} \{$B$\}. Coincident with the robot's URDF description \texttt{base\_link} frame. The $x$-axis pointing in the frontal direction of the robot and the $z$-axis pointing upwards.
 	
-	\item \emph{Camera frame} ($C$). Centered in the camera center with the $x$-axis pointing right in the image and the y-axis pointing downwards in the image. As a result, the $z$-axis points where the camera is pointing, in this case downwards. Coincident with the \texttt{downward\_cam\_optical\_frame} frame.
+	\item \emph{Camera frame} \{$C$\}. Centered in the camera center with the $x$-axis pointing right in the image and the y-axis pointing downwards in the image. As a result, the $z$-axis points where the camera is pointing, in this case downwards. Coincident with the \texttt{downward\_cam\_optical\_frame} frame.
 	
-	\item \emph{Image plane} ($P$). Corresponds to the perspective projection of a physical point in the camera sensor following the pinhole camera model. The origin of this frame is in the top-left corner of the image, the $x$-axis points right and the $y$-axis points downwards. See also Figure \ref{fig:image_plane}
+	\item \emph{Image plane} \{$P$\}. Corresponds to the perspective projection of a physical point in the camera sensor following the pinhole camera model. The origin of this frame is in the top-left corner of the image, the $x$-axis points right and the $y$-axis points downwards. See also Figure \ref{fig:image_plane}
 	
-	\item \emph{Tag frame} ($T$). Centered in the tag center with the $x$-axis pointing upwards in the image and the y-axis pointing right in the image. See also Figure \ref{fig:april-frames}.
+	\item \emph{Tag frame} \{$T$\}. Centered in the tag center with the $x$-axis pointing upwards in the image and the y-axis pointing right in the image. See also Figure \ref{fig:april-frames}.
 	
-	\item \emph{Object frame} ($O$). Centered in the tag center with$x$-axis pointing right in the image and the y-axis pointing downwards in the image.
+	\item \emph{Object frame} \{$O$\}. Centered in the tag center with $x$-axis pointing right in the image and the y-axis pointing downwards in the image.
 \end{itemize}
 
 \begin{figure}[ht]
 	\caption{Camera image plane reference frame}
 	\centering
-	\includegraphics[keepaspectratio, width=6cm]{content/chapter_02/images/image_plane.png}
+	\includegraphics[keepaspectratio, width=8cm]{content/chapter_02/images/image_plane.png}
 	\label{fig:image_plane}
 \end{figure}
 
@@ -47,7 +49,7 @@ Visual Servoing is defined in the literature as the use of computer vision data 
 
 \nomenclature[ba]{CV}{Computer Vision}
 
-Visual servo controllers accomplish their task of reaching a certain pose by trying to minimize the following error $\bm{e}(t)$
+Visual servo controllers accomplish their task of reaching a certain pose by trying to minimize the following error 
 
 \begin{equation}
 \bm{e}(t) = \bm{s}(\bm{m}(t), \bm{a}) - \bm{s}^\ast
@@ -63,7 +65,7 @@ There exist two main variants of Visual Servoing depending on how the features v
 \nomenclature[ba]{IBVS}{Image Based Visual Servoing}
 \nomenclature[ba]{PBVS}{Position Based Visual Servoing}
 
-Using the PBVS approach leads to the necessity of camera calibration and estimation of the flying robot pose, these are two big disadvantages for the application intended in this work. On the other side, IBVS needs no camera calibration and allows the robot to achieve the pose desired without any pose estimation process. Resulting in a convenient method for cheap systems.
+Using the PBVS approach leads to the necessity of camera calibration and estimation of the robot' pose, these are two big disadvantages for the application intended in this work. On the other hand, IBVS needs no camera calibration and allows the robot to achieve the pose desired without any pose estimation process. Resulting in a convenient method for cheap systems.
 
 A simple velocity controller can be arranged in the following way. Let $\bm{v}_c = (v_c, \bm{\omega}_c)$ be the spatial velocity of the camera, with $v_c$ the instantaneous linear velocity of the origin of the camera frame and $\bm{\omega}_c$ the instantaneous angular velocity of the camera frame, as a result the temporal variation of the features can be expressed as
 
@@ -81,7 +83,7 @@ The time variation of the error to be minimized can be obtained by combining \re
 \label{eq:vs-th-3}
 \end{equation}
 
-with $\bm{L_e} = \bm{L_s}$. The input for such a controller is the camera velocity  $\bm{v}_c$, which, using \ref{eq:vs-th-3}, can be set in such a way that an exponential decrease of the error is imposed (i.e. $\dot{\bm{e}} = - \lambda \bm{e}$) 
+With $\bm{L_e} = \bm{L_s}$. The input for such a controller is the camera velocity  $\bm{v}_c$, which, using \ref{eq:vs-th-3}, can be set in such a way that an exponential decrease of the error is imposed (i.e. $\dot{\bm{e}} = - \lambda \bm{e}$) 
 
 \begin{equation}
 \bm{v}_c = - \lambda \bm{L_e}^+ \bm{e}
@@ -210,7 +212,7 @@ While entered moments are given by
 \mu _{ij} = \sum_{k=1}^n \left( x_k - x_g \right)^i \left( y_k - y_g \right)^j
 \end{equation}
 
-Where for the area $a = m_{00}$ and for the centroid coordinates $\left\lbrace \bar{x_g}, \bar{y_g} \right\rbrace = \left\lbrace m_{10}/m_{00}, m_{01}/m_{00} \right\rbrace $. Any moment defined in this way, is known to be invariant to 2D translational motion. 
+Where for the area $a = m_{00}$ and for the centroid coordinates $\left\lbrace \bar{x}_g, \bar{y}_g \right\rbrace = \left\lbrace m_{10}/m_{00}, m_{01}/m_{00} \right\rbrace $. Any moment defined in this way, is known to be invariant to 2D translational motion. 
 
 %Several works \cite{bourquardez_2009} \cite{tahri_2005} introduced the area and centroid coordinates of a target as visual features. For this case, the interaction matrix has the following form \cite{tahri_2005}.
 %
@@ -379,6 +381,6 @@ In \cite{santamaria-navarro_uncalibrated_2017}, redundant manipulation and hiera
 		\cite{santamaria-navarro_uncalibrated_2017} & quadrotor  & 6 & eye-in-hand & Uncalibrated IBVS & blobs' barycenters & hierarchical task-composition algorithm \\
 		\bottomrule
 	\end{tabularx}
-	\caption{Overview of the different approaches for VS in flying manipulators}
+	\caption{Overview of the different approaches for VS in aerial manipulators}
 	\label{vs-manipulators-table}
 \end{sidewaystable}
