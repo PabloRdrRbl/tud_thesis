@@ -1,9 +1,20 @@
+depth: 1.0
+
 use_adapt_lambda: true
 
-lambda/lambda: 0.01
+lambda/lambda: 1.0
 
-lambda/zero: 1.5
-lambda/inf: 0.3
-lambda/slope: 40.0
+lambda/zero: 1.2
+lambda/inf: 0.4
+lambda/slope: 5.0
 
-lambda/w: 0.2
+lambda/w: 0.25
+
+tol/error/translation: 0.00001
+tol/error/rotation: 0.005
+
+rate: 20
+
+k/p: 0.8
+k/i: 0.005 
+k/d: 0.001
